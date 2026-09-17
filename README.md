@@ -14,7 +14,7 @@
 <br/>
 
 [![Documentação Formal](https://img.shields.io/badge/📄_Documentação_Formal-Ver_Documento-0D1117?style=for-the-badge&logo=googledocs&logoColor=white)](./docs/Educa%2B_Documentacao_Formal.pdf)
-[![Site da Equipe](https://img.shields.io/badge/🌐_Site_da_Equipe-Acessar-0D1117?style=for-the-badge&logo=googlechrome&logoColor=white)](https://URL-DO-SITE-DA-EQUIPE.com)
+[![Site da Equipe](https://img.shields.io/badge/🌐_Site_da_Equipe-Acessar-0D1117?style=for-the-badge&logo=googlechrome&logoColor=white)](https://sites.google.com/d/1PbciPL0vycob4DeikM-IDV4WaVcvWhBN/p/1o3Y3O97XRch4HVwO5U-HnqfoflWnAOcN/edit)
 
 ---
 
