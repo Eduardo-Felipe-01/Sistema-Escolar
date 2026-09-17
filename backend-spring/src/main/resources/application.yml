@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gestao-escolar
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    open-in-view: false
+
+  # Primary Database: PostgreSQL
+  datasource:
+    postgres:
+      url: ${POSTGRES_URL:jdbc:postgresql://localhost:5433/escola_db}
+      username: ${POSTGRES_USER:postgres}
+      password: ${POSTGRES_PASSWORD:postgres123}
+      driver-class-name: org.postgresql.Driver
+    # Secondary Database: MySQL
+    mysql:
+      url: ${MYSQL_URL:jdbc:mysql://localhost:3307/escola_secundaria?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+      username: ${MYSQL_USER:root}
+      password: ${MYSQL_PASSWORD:mysql123}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+app:
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration-ms: 86400000 # 24 horas
+  analytics:
+    url: ${ANALYTICS_URL:http://localhost:8000}

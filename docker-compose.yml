@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # 1. Banco de Dados Principal: PostgreSQL
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: escola-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: escola_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d escola_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 2. Banco de Dados Secundário: MySQL (Auditoria e Logs)
+  mysql-db:
+    image: mysql:8.0
+    container_name: escola-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql123
+      MYSQL_DATABASE: escola_secundaria
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmysql123"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 3. Microserviço Python de Processamento e Análise Estatística
+  python-analytics:
+    build:
+      context: ./python-analytics
+      dockerfile: Dockerfile
+    container_name: escola-python-analytics
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+
+  # 4. Backend Central: Java + Spring Boot
+  backend-spring:
+    build:
+      context: ./backend-spring
+      dockerfile: Dockerfile
+    container_name: escola-backend-spring
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres-db:5432/escola_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      MYSQL_URL: jdbc:mysql://mysql-db:3306/escola_secundaria?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      MYSQL_USER: root
+      MYSQL_PASSWORD: mysql123
+      ANALYTICS_URL: http://python-analytics:8000
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      mysql-db:
+        condition: service_healthy
+      python-analytics:
+        condition: service_started
+
+  # 5. Frontend Web: Angular + TypeScript
+  frontend-angular:
+    build:
+      context: ./frontend-angular
+      dockerfile: Dockerfile
+    container_name: escola-frontend-angular
+    restart: always
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend-spring
+      - python-analytics
+
+volumes:
+  postgres_data:
+  mysql_data:

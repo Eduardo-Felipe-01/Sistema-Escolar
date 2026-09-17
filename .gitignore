@@ -1,0 +1,28 @@
+# Maven & Java
+backend-spring/target/
+**/target/
+*.class
+
+# Node & Angular
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.angular/
+**/.angular/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+*.egg-info/
+
+# Logs & Temporary Files
+*.log
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
