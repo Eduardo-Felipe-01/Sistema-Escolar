@@ -39,9 +39,9 @@
 ## 📋 Índice
 
 - [Visão Geral e Escopo](#-visão-geral-e-escopo)
-- [Arquitetura Híbrida Modular e Tecnologias](#-arquitetu-hibrida-modular-e-tecnologias)
+- [Arquitetura Híbrida Modular e Tecnologias](#arquitetura-hibrida-modular-e-tecnologias)
 - [Controle de Acesso (RBAC)](#-controle-de-acesso-rbac)
-- [Regras de Negócio e Automações](#-regras-de-negocio-e-automaçoes)
+- [Regras de Negócio e Automações](#regras-de-negocio-e-automacoes)
 - [Deploy / Execução](#-deploy--execução)
 - [Documentação & Links](#-documentação--links)
 ---
