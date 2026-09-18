@@ -44,7 +44,6 @@
 - [Regras de Negócio e Automações](#regras-de-negócio-e-automações)
 - [Deploy / Execução](#deploy--execução)
 - [Documentação & Links](#documentação--links)
-
 ---
 
 
