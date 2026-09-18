@@ -1,0 +1,638 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% PROJETO MOBILE - AV2
+%% UNINASSAU - CIÊNCIA DA COMPUTAÇÃO
+%% MODELO COMPLETO ABNTEX2 - OVERLEAF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[
+    12pt,
+    oneside,
+    openright,
+    a4paper,
+    english,
+    brazil
+]{abntex2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  PACOTES                        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{etoolbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%            CONFIGURAÇÕES GERAIS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\OnehalfSpacing
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%          CAMINHO DAS IMAGENS                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{Imagens/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%        REMOVE PÁGINAS EM BRANCO                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\makeatletter
+\patchcmd{\chapter}
+{\if@openright\cleardoublepage\else\clearpage\fi}
+{\clearpage}{}{}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%         CONFIGURAÇÃO DE CÓDIGOS                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white},
+    commentstyle=\color{green},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{black},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  INÍCIO                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    CAPA                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{capa}
+
+\begin{center}
+
+\includegraphics[width=5cm]{imagens/logo-uninassau.png}
+
+\vspace{1cm}
+
+{\large \textbf{CENTRO UNIVERSITÁRIO MAURÍCIO DE NASSAU}}
+
+\vspace{0.3cm}
+
+{\large CURSO DE CIÊNCIA DA COMPUTAÇÃO}
+
+\vspace{2cm}
+
+{\Huge \textbf{PROJETO Educa+}}
+
+\vspace{1cm}
+
+{\Large Desenvolvimento de Sistema Educacional}
+
+\vspace{2cm}
+
+\textbf{Integrantes}
+
+Alexsander Albino\\
+Eduardo Felipe\\
+Fernando Gabriel\\
+Humberto Alves\\
+Italo Henrique\\
+
+
+\vfill
+
+Disciplina: Front-end Frameworks e Códigos de Alta Performance — Mobile\\
+Professor(a): Anderlan Henrique
+
+\vspace{2cm}
+
+Maceió - AL\\
+2026
+
+\end{center}
+
+\end{capa}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                 CONTRACAPA                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{capa}
+
+\begin{center}
+
+NOME DOS ALUNOS\\
+Alexsander Albino dos Santos\\
+Eduardo Felipe da Silva Gomes\\
+Fernando Gabriel Souza de Lima\\
+Humberto Alves da Silva\\
+Italo Henrique dos Sntos Silva\\
+
+\vspace{4cm}
+
+{\Large \textbf{PROJETO Educa+}}
+
+\vspace{4cm}
+
+\begin{flushright}
+
+Trabalho apresentado à disciplina de Front-end Frameworks e Códigos de Alta Performance — Mobile, do curso de Ciência da Computação do Centro Universitário Maurício de Nassau — UNINASSAU, como requisito para obtenção da nota das avaliações AV1 e AV2.
+
+\vspace{1cm}
+
+Professor(a): Anderlan Henrique
+
+\end{flushright}
+
+\vfill
+
+Maceió - AL\\
+2026
+
+\end{center}
+
+\end{capa}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                    RESUMO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Resumo}
+
+Este trabalho apresenta a especificação e a arquitetura do
+\textbf{Educa+}, um sistema de gestão escolar Web e Mobile em
+desenvolvimento, que visa centralizar o lançamento de notas, o
+controle de frequência e o cronograma escolar, atendendo aos
+perfis de Aluno, Professor e Coordenador com níveis de acesso
+distintos.
+A arquitetura segue o modelo de Arquitetura Híbrida Modular,
+utilizando TypeScript, Angular e Kotlin no front-end, Python e
+Java com Spring Boot no back-end, e Postgres e MySQL como bancos
+de dados.
+O projeto encontra-se em desenvolvimento, sendo realizado na
+disciplina de Front-end Frameworks e Códigos de Alta Performance
+--- Mobile.
+
+\vspace{0.5cm}
+
+\textbf{Palavras-chave:} Gestão Escolar. Sistema Web e Mobile.
+Arquitetura Híbrida Modular . Angular. Kotlin. Spring Boot.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                   ABSTRACT                      %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Abstract}
+
+This paper presents the specification and architecture of
+\textbf{Educa+}, a Web and Mobile school management system
+currently under development, aimed at centralizing grade
+recording, attendance control, and school schedule management,
+serving the Student, Teacher, and Coordinator profiles with
+distinct access levels.
+The architecture follows a 
+Hybrid Modular Architecture, using
+TypeScript, Angular, and Kotlin on the front-end, Python and Java
+with Spring Boot on the back-end, and Postgres and MySQL as
+databases.
+The project is currently under development, being carried out in
+the Front-end Frameworks and High Performance Code --- Mobile
+course.
+
+\vspace{0.5cm}
+
+\textbf{Keywords:} School Management. Web and Mobile System.
+Polyglot Modular Monolith. Angular. Kotlin. Spring Boot.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                   SUMÁRIO                       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                 ESPECIFICAÇÃO E ARQUITETURA DO PROJETO                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Documento de Especificação e Arquitetura}
+
+\section{Identificação do Projeto}
+
+\begin{itemize}
+    \item \textbf{Projeto:} Educa+ --- Sistema de Gestão Escolar
+    (Web e Mobile).
+    \item \textbf{Plataforma:} Web e Mobile (acesso via navegador
+    e dispositivos móveis).
+    \item \textbf{Contexto:} Acadêmico (AV1 e AV2).
+    \item \textbf{Tamanho da Equipe:} 5 pessoas.
+    \item \textbf{Origem:} Projeto desenvolvido do zero.
+\end{itemize}
+
+\section{Objetivo do Projeto e Visão Geral}
+
+\textbf{Problema que resolve:} Colégios enfrentam dificuldade em
+centralizar e organizar processos educacionais básicos do dia a
+dia, como lançamento de notas, controle de frequência (chamada) e
+organização do cronograma escolar. Sem um sistema integrado, essas
+atividades costumam ser feitas de forma manual ou fragmentada,
+dificultando o acompanhamento tanto por parte da equipe pedagógica
+quanto dos próprios alunos.
+
+\vspace{0.3cm}
+
+\textbf{Valor entregue:} Uma aplicação Web e Mobile que permite a
+professores e coordenadores lançar notas, realizar chamada e
+organizar o cronograma escolar de forma centralizada.
+Paralelamente, os alunos têm acesso a essas informações em modo de
+visualização, acompanhando seu desempenho e sua rotina escolar de
+qualquer dispositivo.
+
+\section{Stakeholders, Público-Alvo e Impacto Arquitetural}
+
+A visão de negócio foi alinhada às necessidades técnicas para
+definir os impactos estruturais de cada perfil de usuário:
+
+\begin{itemize}
+    \item \textbf{Aluno}
+    \begin{itemize}
+        \item \textit{Interesse/Necessidade:} Necessita visualizar
+        notas, frequência e cronograma escolar de forma rápida e
+        segura.
+        \item \textit{Impacto Arquitetural:} Exige isolamento de
+        dados estrito (para que um aluno nunca veja as notas de
+        outro) e requer uma interface mobile/web responsiva e
+        fluida.
+    \end{itemize}
+
+    \item \textbf{Professor}
+    \begin{itemize}
+        \item \textit{Interesse/Necessidade:} Responsável por
+        lançar notas e frequência nas turmas às quais está
+        vinculado de forma prática, além de emitir relatórios.
+        \item \textit{Impacto Arquitetural:} Exige validação de
+        permissões rigorosa no Back-end para garantir que o
+        docente apenas altere os dados das suas próprias turmas.
+    \end{itemize}
+
+    \item \textbf{Coordenador}
+    \begin{itemize}
+        \item \textit{Interesse/Necessidade:} Responsável por
+        acompanhar todos os dados da escola, criar o cronograma
+        escolar, gerenciar usuários (criar/deletar) e alterar
+        notas ou frequências.
+        \item \textit{Impacto Arquitetural:} Exige consistência de
+        dados forte e painéis de auditoria robustos (histórico de
+        alterações).
+    \end{itemize}
+
+    \item \textbf{Instituições de Ensino (Colégios)}
+    \begin{itemize}
+        \item \textit{Interesse/Necessidade:} Buscam centralizar
+        processos acadêmicos.
+    \end{itemize}
+
+    \item \textbf{Time Técnico}
+    \begin{itemize}
+        \item \textit{Interesse/Necessidade:} Entregar o software
+        dentro do prazo acadêmico, lidando com a complexidade
+        imposta pelo uso de 7 tecnologias diferentes.
+        \item \textit{Impacto Arquitetural:} Justifica a adoção de
+        uma arquitetura estritamente organizada (como um Monólito
+        Modular bem dividido) para viabilizar e conter a
+        complexidade dessas múltiplas tecnologias.
+    \end{itemize}
+\end{itemize}
+
+\section{Escopo do Produto}
+
+\subsection{Módulos do Sistema}
+
+O sistema organiza suas regras de negócio através da seguinte
+divisão modular lógica:
+
+\begin{itemize}
+    \item \textbf{Módulo de Autenticação e Usuários:} Gerencia o
+    cadastro, exclusão de usuários pelo coordenador, criptografia
+    de senhas e geração de tokens de sessão (JWT).
+    \item \textbf{Módulo Acadêmico (Notas e Frequências):} Onde
+    professores lançam os dados e o sistema executa os cálculos
+    automáticos de média e frequência, aplicando a regra de
+    reprovação por falta.
+    \item \textbf{Módulo de Cronograma:} Gerenciado exclusivamente
+    pelo coordenador para estruturar a grade de horários.
+    \item \textbf{Módulo de Auditoria e Relatórios:} Salva o
+    histórico de alterações e gera relatórios para professores e
+    coordenadores.
+\end{itemize}
+
+\subsection{O que o Sistema Faz (Dentro do Escopo)}
+
+O sistema oferece as seguintes funcionalidades principais:
+
+\begin{itemize}
+    \item Autenticação de usuário com três perfis distintos:
+    Aluno, Professor e Coordenador.
+    \item Aluno pode visualizar as alterações feitas sobre seus
+    próprios dados e visualizar as emissões de relatórios
+    referentes a ele.
+    \item Professor pode lançar notas e frequência nas turmas às
+    quais está vinculado e emitir relatórios.
+    \item Coordenador pode validar as ações realizadas pelos
+    professores, acompanhar todos os dados da escola, alterar
+    notas e frequência dos alunos, criar o cronograma escolar,
+    criar ou deletar usuários e designar o tipo de cada usuário.
+    \item Cálculo automático da média das notas do aluno, cálculo
+    automático da frequência e reprovação automática por falta
+    (conforme frequência mínima exigida).
+    \item Controle de acesso garantindo que notas e frequência só
+    sejam visualizadas por coordenador, professor e o próprio
+    aluno.
+    \item Armazenamento de senhas de forma criptografada e
+    histórico de alterações realizadas no sistema.
+    \item Recursos de acessibilidade (Libras e suporte a
+    Daltonismo).
+\end{itemize}
+
+\subsection{O que o Sistema Não Faz (Fora do Escopo)}
+
+Os itens abaixo estão deliberadamente excluídos do MVP:
+
+\begin{itemize}
+    \item Funcionamento offline (o sistema requer conexão com
+    internet).
+    \item Comunicação/chat direto entre aluno, professor e
+    coordenador dentro do sistema.
+    \item Emissão de boletim em PDF ou documento oficial assinado
+    digitalmente.
+    \item Módulo financeiro (mensalidades, boletos, pagamentos).
+    \item Integração com sistemas externos de terceiros (ex:
+    Google Classroom, ERPs escolares).
+    \item Notificações push ou envio automático de e-mail/SMS.
+    \item Gestão de biblioteca, materiais didáticos ou conteúdo
+    pedagógico.
+    \item Geração automática de cronograma por inteligência
+    artificial.
+    \item Múltiplas unidades/filiais de uma mesma instituição (o
+    sistema atende a uma única escola).
+    \item Resolução de Plataforma: será desenvolvido um aplicativo
+    mobile utilizando Kotlin (cumprindo a meta técnica), porém sua
+    publicação em lojas (Play Store/App Store) está fora do
+    escopo, sendo distribuído internamente ou por emuladores para
+    fins acadêmicos. O acesso web permanece responsivo.
+\end{itemize}
+
+\section{Decisões Arquiteturais}
+
+\textbf{Estilo Arquitetural Base:} Arquitetura Híbrida Modular .
+
+\vspace{0.3cm}
+
+\textbf{Decisão:} Utilizar uma Arquitetura Híbrida Modular , dividindo as
+regras de negócio internamente por módulos.
+
+\subsection{A Estratégia das 7 Tecnologias Obrigatórias}
+
+O sistema orquestra 7 (sete) tecnologias distintas distribuídas da
+seguinte forma:
+
+\begin{itemize}
+    \item \textbf{Front-end (3 tecnologias)}
+    \begin{itemize}
+        \item \textbf{TypeScript:} linguagem front-end utilizada
+        para as páginas estáticas ou portal base.
+        \item \textbf{Angular:} framework front-end destinado ao
+        dashboard rico do Coordenador e do Professor na interface
+        Web.
+        \item \textbf{Kotlin:} linguagem adotada para o aplicativo
+        mobile responsivo focado nos alunos e professores.
+    \end{itemize}
+
+    \item \textbf{Back-end (2 tecnologias)}
+    \begin{itemize}
+        \item \textbf{Python:} responsável pelo processamento e
+        análise de dados, atuando no módulo de Autenticação,
+        controle de acessos e nas rotas gerais da aplicação.
+        \item \textbf{Java com Spring Boot:} responsável por
+        encapsular o módulo de regras de negócio pesadas, além do
+        cálculo automático de médias, frequências e pela lógica de
+        reprovação.
+    \end{itemize}
+
+    \item \textbf{Banco de Dados (2 SGBDs)}
+    \begin{itemize}
+        \item \textbf{Postgres:} banco de dados principal focado
+        no armazenamento de dados críticos que exigem as
+        propriedades de consistência ACID.
+        \item \textbf{MySQL:} banco de dados secundário designado
+        para armazenar o histórico de alterações realizadas no
+        sistema (dados de auditoria) através de um formato JSON
+        flexível.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Modelo C4 Simplificado}
+
+\textbf{Nível 1 (Contexto)}
+\begin{itemize}
+    \item Atores: Aluno, Professor, Coordenador.
+    \item Sistema Central: Sistema de Gestão Escolar (Web \&
+    Mobile).
+\end{itemize}
+
+\textbf{Nível 2 (Containers)}
+\begin{itemize}
+    \item Web App \& Mobile App (front-ends construídos utilizando
+    as 3 tecnologias especificadas).
+    \item API Back-end Core (composta e dividida nas 2 linguagens
+    de back-end).
+    \item Databases (compostos pelos 2 SGBDs distintos).
+\end{itemize}
+
+\section{Restrições, Premissas e Trade-offs Arquiteturais}
+
+\subsection{Restrições (Constraints)}
+
+\begin{itemize}
+    \item \textbf{Cronograma Restrito e Alta Complexidade:} o
+    projeto possui prazo de execução rigoroso e atua como risco
+    crítico devido à complexidade arquitetural e ao volume de
+    integrações.
+    \item \textbf{Curva de Aprendizado da Equipe Técnica:} a
+    equipe precisará lidar com o esforço simultâneo de pesquisa e
+    capacitação em múltiplas linguagens e frameworks sem
+    proficiência prévia consolidada.
+    \item \textbf{Imposição de Arquitetura Poliglota:} exigência de
+    3 tecnologias para o front-end, 2 para o back-end e 2 SGBDs,
+    aumentando o risco de falhas de interoperabilidade e a
+    dificuldade de manutenção do código.
+    \item \textbf{Integração de Dados do Ecossistema Mobile:}
+    obrigatoriedade arquitetural de orquestrar a comunicação
+    segura entre a aplicação mobile e a infraestrutura de banco de
+    dados via APIs no back-end.
+    \item \textbf{Rigor Documental Acadêmico:} obrigatoriedade do
+    uso de LaTeX para redigir a documentação oficial, demandando
+    adaptação à sintaxe da ferramenta e consumindo tempo do
+    cronograma.
+\end{itemize}
+
+\subsection{Premissas de Negócio e Arquitetura}
+
+\begin{itemize}
+    \item \textbf{Persistência e Integridade da Informação (ACID):}
+    assume-se que todos os dados transacionados sejam persistentes
+    e não voláteis. A arquitetura garantirá durabilidade (ACID)
+    nos SGBDs.
+    \item \textbf{Visibilidade Hierárquica e Propagação de Dados:}
+    as mutações de estado efetuadas por professores serão
+    imediatamente propagadas e disponibilizadas para gestão e
+    auditoria do perfil coordenador.
+    \item \textbf{Controle de Acesso (RBAC) e Isolamento de Visão
+    (Data Isolation):} o sistema utiliza o Controle de Acesso
+    Baseado em Papéis. Alunos operam sob o princípio do menor
+    privilégio (\textit{read-only}) com isolamento estrito,
+    visualizando exclusivamente as informações atreladas ao seu
+    próprio identificador (ID).
+\end{itemize}
+
+\subsection{Trade-offs do Monólito Modular}
+
+\begin{itemize}
+    \item \textbf{O que ganhamos:} facilidade de desenvolvimento
+    para uma equipe de 5 pessoas operando em um prazo de entrega
+    restrito.
+    \item \textbf{O que perdemos:} complexidade elevada na
+    integração das 7 tecnologias obrigatórias, requerendo grande
+    disciplina de código para orquestrar 2 back-ends e 2 bancos
+    diferentes dentro de uma estrutura centralizada.
+\end{itemize}
+
+\section{Matriz de Entregáveis}
+
+\begin{longtable}{p{2.8cm} p{4.5cm} p{4.5cm} p{1.8cm}}
+\toprule
+\textbf{Entregável} & \textbf{Descrição Técnica} &
+\textbf{Critérios de Aceite (DoD)} & \textbf{Status} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{Entregável} & \textbf{Descrição Técnica} &
+\textbf{Critérios de Aceite (DoD)} & \textbf{Status} \\
+\midrule
+\endhead
+
+Levantamento e Elicitação de Requisitos &
+Identificação, coleta e documentação sistemática das necessidades
+dos usuários, mapeando requisitos funcionais, não funcionais e
+regras de negócio. &
+Documento de especificação de requisitos mapeado, validado e sem
+ambiguidades impeditivas para o planejamento. &
+Concluído \\
+\midrule
+
+Definição de Escopo &
+Documentação técnica formal contendo requisitos, regras de
+negócio, premissas, restrições e objetivos primários do projeto. &
+Documento revisado e formalmente aprovado pelas partes
+interessadas. &
+Iniciado \\
+\midrule
+
+Wireframe &
+Estruturação visual preliminar e arquitetura de informação das
+interfaces (prototipação de baixa fidelidade). &
+Validação da jornada do usuário e aprovação do layout estrutural,
+sem identidade visual. &
+A Iniciar \\
+\midrule
+
+Mockup de Interface (UI Design) &
+Representação visual estática e de alta fidelidade das telas,
+aplicando a identidade visual sobre o wireframe validado. &
+Aprovação estética das telas-chave e consolidação do Design
+System preliminar. &
+A Iniciar \\
+\midrule
+
+Protótipo de Alta Fidelidade &
+Representação interativa e completa das interfaces, simulando
+fluxos de navegação reais. &
+Aprovação final das telas, fluxos e componentes visuais pela banca
+avaliadora. &
+A Iniciar \\
+\midrule
+
+Repositório Git (GitHub) &
+Ambiente de controle de versão configurado, com modelo de
+ramificação e padronização de commits. &
+Repositório acessível, estrutura de pastas inicializada e proteção
+de branch configurada. &
+A Iniciar \\
+\midrule
+
+Código-Fonte &
+Conjunto completo dos artefatos de software (front-end, back-end e
+banco de dados), sob boas práticas e padrões de projeto. &
+Código compilando sem erros críticos, aderente aos requisitos e
+aprovado em Code Review. &
+A Iniciar \\
+\midrule
+
+Sistema Funcional de Gestão de Acessos &
+Versão final, íntegra e operável do sistema, implantada em
+ambiente de homologação ou produção. &
+Aprovação nos Testes de Aceitação do Usuário (UAT) e estabilidade
+comprovada. &
+A Iniciar \\
+\midrule
+
+Relatório Técnico em LaTeX &
+Documentação acadêmica do projeto redigida em LaTeX, conforme
+normas institucionais (padrão ABNT/TCC). &
+Documento compilado sem erros de formatação (PDF gerado), pronto
+para depósito final. &
+A Iniciar \\
+\midrule
+
+Apresentação da Ferramenta &
+Demonstração técnica do software, evidenciando a arquitetura
+adotada e os desafios técnicos superados. &
+Apresentação realizada com sucesso e resposta a questionamentos
+técnicos. &
+A Iniciar \\
+\bottomrule
+\end{longtable}
+
+\end{document}
