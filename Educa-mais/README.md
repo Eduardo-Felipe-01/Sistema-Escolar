@@ -38,15 +38,16 @@
 
 ## 📋 Índice
 
-- [Visão Geral e Escopo](#-visão-geral-e-escopo)
+- [Visão Geral e Escopo](#visao)
 - [Arquitetura Híbrida Modular e Tecnologias](#arquitetura)
-- [Controle de Acesso (RBAC)](#-controle-de-acesso-rbac)
+- [Controle de Acesso (RBAC)](#controle)
 - [Regras de Negócio e Automações](#regras)
-- [Deploy / Execução](#-deploy--execução)
-- [Documentação & Links](#-documentação--links)
+- [Deploy / Execução](#deploy)
+- [Documentação & Links](#documentacao)
 ---
 
 
+<a id="visao"></a>
 ## 🎯 Visão Geral e Escopo
 
 ### O Problema
@@ -161,6 +162,7 @@ A comunicação entre as camadas é **Stateless via JWT**, eliminando a necessid
 
 ---
 
+<a id="controle"></a>
 ## 🔐 Controle de Acesso (RBAC)
 
 O sistema implementa **Role-Based Access Control (RBAC)** com isolamento hierárquico estrito. Cada perfil opera com o conjunto mínimo de permissões necessário para sua função.
@@ -281,6 +283,7 @@ O banco de dados **MySQL** é dedicado exclusivamente ao registro de auditoria e
 
 ---
 
+<a id="deploy"></a>
 ## 🚀 Deploy / Execução
 
 > **⚠️ Configurações de deploy em breve.**  
@@ -306,6 +309,7 @@ O banco de dados **MySQL** é dedicado exclusivamente ao registro de auditoria e
 
 ---
 
+<a id="documentacao"></a>
 ## 📎 Documentação & Links
 
 ### Recursos do Projeto
