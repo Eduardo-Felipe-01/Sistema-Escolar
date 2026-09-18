@@ -39,9 +39,9 @@
 ## 📋 Índice
 
 - [Visão Geral e Escopo](#-visão-geral-e-escopo)
-- [Arquitetura Híbrida Modular e Tecnologias](#arquitetura-hibrida-modular-e-tecnologias)
+- [Arquitetura Híbrida Modular e Tecnologias](#arquitetura)
 - [Controle de Acesso (RBAC)](#-controle-de-acesso-rbac)
-- [Regras de Negócio e Automações](#regras-de-negocio-e-automacoes)
+- [Regras de Negócio e Automações](#regras)
 - [Deploy / Execução](#-deploy--execução)
 - [Documentação & Links](#-documentação--links)
 ---
@@ -98,6 +98,7 @@ O **Educa+** resolve esse problema ao centralizar, em uma única plataforma Web 
 
 ---
 
+<a id="arquitetura"></a>
 ## 🏗️ Arquitetura Híbrida Modular e Tecnologias
 
 O sistema adota o padrão **Arquitetura Híbrida Modular**: uma única aplicação com módulos internos bem delimitados, cada um usando a tecnologia mais adequada para sua responsabilidade. Essa decisão arquitetural foi feita para cumprir o requisito acadêmico de integrar **7 tecnologias distintas** sem incorrer na complexidade operacional de microsserviços.
@@ -220,6 +221,7 @@ O Coordenador possui o nível de acesso mais elevado da hierarquia:
 
 ---
 
+<a id="regras"></a>
 ## ⚙️ Regras de Negócio e Automações
 
 ### 🧮 Motor Acadêmico Automático
