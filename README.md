@@ -26,7 +26,7 @@
 
 | Membro | Papel |
 |---|---|
-| Alexander Albino | Desenvolvedor |
+| Alexsander Albino | Desenvolvedor |
 | Eduardo Felipe | Desenvolvedor |
 | Fernando Gabriel | Desenvolvedor |
 | Humberto Alves | Desenvolvedor |
