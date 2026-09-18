@@ -14,7 +14,7 @@
 <br/>
 
 [![Documentação Formal](https://img.shields.io/badge/📄_Documentação_Formal-Ver_Documento-0D1117?style=for-the-badge&logo=googledocs&logoColor=white)](./docs/Educa%2B_Documentacao_Formal.pdf)
-[![Site da Equipe](https://img.shields.io/badge/🌐_Site_da_Equipe-Acessar-0D1117?style=for-the-badge&logo=googlechrome&logoColor=white)](https://sites.google.com/d/1PbciPL0vycob4DeikM-IDV4WaVcvWhBN/p/1o3Y3O97XRch4HVwO5U-HnqfoflWnAOcN/edit)
+[![Site da Equipe](https://img.shields.io/badge/🌐_Site_da_Equipe-Acessar-0D1117?style=for-the-badge&logo=googlechrome&logoColor=white)](https://sites.google.com/view/educa--mais/p%C3%A1gina-inicial)
 
 ---
 
@@ -39,7 +39,7 @@
 ## 📋 Índice
 
 - [Visão Geral e Escopo](#-visão-geral-e-escopo)
-- [Arquitetura Poliglota e Tecnologias](#-arquitetura-poliglota-e-tecnologias)
+- [Arquitetura Híbrida Modular e Tecnologias](#-arquitetura-poliglota-e-tecnologias)
 - [Controle de Acesso (RBAC)](#-controle-de-acesso-rbac)
 - [Regras de Negócio e Automações](#-regras-de-negócio-e-automações)
 - [Deploy / Execução](#-deploy--execução)
@@ -99,9 +99,9 @@ O **Educa+** resolve esse problema ao centralizar, em uma única plataforma Web 
 
 ---
 
-## 🏗️ Arquitetura Poliglota e Tecnologias
+## 🏗️ Arquitetura Híbrida Modular e Tecnologias
 
-O sistema adota o padrão **Monólito Modular Poliglota**: uma única aplicação com módulos internos bem delimitados, cada um usando a tecnologia mais adequada para sua responsabilidade. Essa decisão arquitetural foi feita para cumprir o requisito acadêmico de integrar **7 tecnologias distintas** sem incorrer na complexidade operacional de microsserviços.
+O sistema adota o padrão **Arquitetura Híbrida Modular**: uma única aplicação com módulos internos bem delimitados, cada um usando a tecnologia mais adequada para sua responsabilidade. Essa decisão arquitetural foi feita para cumprir o requisito acadêmico de integrar **7 tecnologias distintas** sem incorrer na complexidade operacional de microsserviços.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -312,7 +312,7 @@ O banco de dados **MySQL** é dedicado exclusivamente ao registro de auditoria e
 | Recurso | Descrição | Link |
 |---|---|---|
 | 📄 **Documentação Formal** | Documento técnico completo com requisitos, modelagem e decisões de arquitetura | [Ver documento](./docs/Educa+_Documentacao_Formal.pdf) |
-| 🌐 **Site da Equipe** | Página oficial da equipe de desenvolvimento | [Acessar site](https://URL-DO-SITE-DA-EQUIPE.com) |
+| 🌐 **Site da Equipe** | Página oficial da equipe de desenvolvimento | [Acessar site](https://sites.google.com/view/educa--mais/p%C3%A1gina-inicial) |
 
 ---
 
