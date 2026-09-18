@@ -311,7 +311,7 @@ O banco de dados **MySQL** é dedicado exclusivamente ao registro de auditoria e
 
 | Recurso | Descrição | Link |
 |---|---|---|
-| 📄 **Documentação Formal** | Documento técnico completo com requisitos, modelagem e decisões de arquitetura | [Ver documento](./docs/Educa+_Documentacao_Formal.pdf) |
+| 📄 **Documentação Formal** | Documento técnico completo com requisitos, modelagem e decisões de arquitetura | [Ver documento](./docs/latex_Educa+.pdf) |
 | 🌐 **Site da Equipe** | Página oficial da equipe de desenvolvimento | [Acessar site](https://sites.google.com/view/educa--mais/p%C3%A1gina-inicial) |
 
 ---
