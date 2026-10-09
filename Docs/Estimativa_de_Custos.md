@@ -1,7 +1,5 @@
 # Estimativa de Custo — Educa+ (Sistema de Gestão Escolar Web e Mobile)
 
-> [!IMPORTANT]
-
 ---
 
 ## 1. Resumo executivo
