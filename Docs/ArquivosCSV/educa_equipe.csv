@@ -1,0 +1,6 @@
+﻿Perfil;Regime;Salario/bolsa;Custo mensal total;Horas produtivas/mes;Custo/hora;Horas base;Horas c/ 25%;Custo projeto
+Especialista;CLT;15000,00;26310,83;128;205,55;512;640;131554,17
+Senior;CLT;10000,00;18040,56;128;140,94;512;640;90202,78
+Pleno;CLT;5000,00;9770,28;128;76,33;512;640;48851,39
+Junior;CLT;3000,00;6462,17;128;50,49;512;640;32310,83
+Estagiario;EST;700,00;1008,33;96;10,50;384;480;5041,67
