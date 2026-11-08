@@ -20,20 +20,19 @@ services:
       timeout: 5s
       retries: 10
 
-  # 2. Banco de Dados Secundário: MySQL (Auditoria e Logs)
-  mysql-db:
-    image: mysql:8.0
-    container_name: escola-mysql
+  # 2. Banco de Dados Secundário: MongoDB (Auditoria e Logs)
+  mongo-db:
+    image: mongo:7.0
+    container_name: escola-mongodb
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: mysql123
-      MYSQL_DATABASE: escola_secundaria
+      MONGO_INITDB_DATABASE: escola_secundaria
     ports:
-      - "3307:3306"
+      - "27017:27017"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mongo_data:/data/db
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmysql123"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -63,14 +62,12 @@ services:
       POSTGRES_URL: jdbc:postgresql://postgres-db:5432/escola_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres123
-      MYSQL_URL: jdbc:mysql://mysql-db:3306/escola_secundaria?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      MYSQL_USER: root
-      MYSQL_PASSWORD: mysql123
+      MONGODB_URI: mongodb://mongo-db:27017/escola_secundaria
       ANALYTICS_URL: http://python-analytics:8000
     depends_on:
       postgres-db:
         condition: service_healthy
-      mysql-db:
+      mongo-db:
         condition: service_healthy
       python-analytics:
         condition: service_started
@@ -90,4 +87,4 @@ services:
 
 volumes:
   postgres_data:
-  mysql_data:
+  mongo_data:

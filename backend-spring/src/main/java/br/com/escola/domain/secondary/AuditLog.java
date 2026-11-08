@@ -1,12 +1,12 @@
 package br.com.escola.domain.secondary;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "audit_logs")
+@Document(collection = "audit_logs")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,8 +15,7 @@ import java.time.LocalDateTime;
 public class AuditLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private Long usuarioId;
 
@@ -24,18 +23,14 @@ public class AuditLog {
 
     private String usuarioRole;
 
-    @Column(nullable = false)
     private String acao; // LANCAMENTO_NOTA, ALTERACAO_NOTA, LANCAMENTO_FREQUENCIA, VALIDACAO_COORDENADOR, etc.
 
-    @Column(nullable = false)
     private String entidade; // Nota, Frequencia, Usuario, Matricula
 
     private Long entidadeId;
 
-    @Column(columnDefinition = "TEXT")
     private String dadosAnteriores;
 
-    @Column(columnDefinition = "TEXT")
     private String dadosNovos;
 
     private String ipOrigem;

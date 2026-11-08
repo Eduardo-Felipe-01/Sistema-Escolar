@@ -396,7 +396,7 @@ export class FrequenciaComponent implements OnInit {
     this.professorService.salvarFrequencias(payload).subscribe({
       next: () => {
         this.salvando = false;
-        this.mostrarMensagem('Chamada registrada com sucesso! Frequências recalculadas e auditoria gravada no MySQL.');
+        this.mostrarMensagem('Chamada registrada com sucesso! Frequências recalculadas e auditoria gravada no MongoDB.');
         this.carregarResumo(); // Atualiza contadores acumulados
       },
       error: (err) => {

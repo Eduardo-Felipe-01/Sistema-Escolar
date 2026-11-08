@@ -1,12 +1,12 @@
-# 🎓 EducaGestão - Sistema Integrado de Gestão Escolar
+# 🎓 Educa+ - Sistema Integrado de Gestão Escolar
 
 > Plataforma completa de gestão acadêmica e pedagógica com controle de acesso multi-perfil (**Professor**, **Coordenador** e **Aluno**), cálculos automáticos de rendimento e assiduidade, auditoria em banco secundário, inteligência de dados e acessibilidade universal (VLibras e Daltonismo).
 
 ---
 
-## 🏛️ Arquitetura da Solução
+## 🏛️ Arquitetura:
 
-O sistema adota uma arquitetura distribuída, moderna e resiliente:
+
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -26,11 +26,11 @@ O sistema adota uma arquitetura distribuída, moderna e resiliente:
 │      Porta: 8080 (HTTP)       │ └────────────────────────┘
 └───────┬───────────────┬───────┘
         │               │
-  JPA / JDBC      JPA / JDBC
+  JPA / JDBC    Spring Data Mongo
         ▼               ▼
 ┌──────────────┐ ┌──────────────┐
-│  PostgreSQL  │ │    MySQL     │
-│  (Porta 5433)│ │ (Porta 3307) │
+│  PostgreSQL  │ │   MongoDB    │
+│  (Porta 5433)│ │ (Porta 27017)│
 │ Banco Princ. │ │ Banco Secund.│
 │  (Usuários,  │ │  (Auditoria, │
 │ Turmas, etc.)│ │  Relatórios) │
@@ -45,7 +45,7 @@ O sistema adota uma arquitetura distribuída, moderna e resiliente:
 | **Backend Central** | Java 17 + Spring Boot 3 | Regras de negócio, Spring Security JWT, cálculo de médias e assiduidade |
 | **Data Analytics** | Python 3 + FastAPI + Pandas | Processamento estatístico de turmas, desvio padrão e predição de risco |
 | **Banco Principal** | PostgreSQL 15 | Entidades de negócio (usuários, turmas, disciplinas, notas, presenças) |
-| **Banco Secundário** | MySQL 8.0 | Histórico de auditoria de alterações e registro de relatórios |
+| **Banco Secundário** | MongoDB 7.0 | Histórico de auditoria de alterações e registro de relatórios (NoSQL) |
 | **Orquestração** | Docker & Docker Compose | Inicialização rápida e padronizada de todo o ecossistema |
 
 ---
@@ -59,7 +59,7 @@ O sistema adota uma arquitetura distribuída, moderna e resiliente:
   - **Cálculo Automático Instantâneo:** Recálculo em tempo real da média ponderada `(N1×0.4) + (N2×0.4) + (Trab×0.2)`.
   - Se a média for inferior a 6.0 e o aluno realizar prova de recuperação, a nota de recuperação substitui proporcionalmente a menor avaliação.
   - Atualização imediata do status (`APROVADO`, `RECUPERAÇÃO`, `REPROVADO`).
-  - Salvamento com **registro de auditoria** automático gravado no MySQL secundário.
+  - Salvamento com **registro de auditoria** automático gravado no MongoDB secundário.
 - **Diário de Frequência & Chamada Escolar:**
   - Registro de presença aula a aula por data selecionada.
   - Botões de status rápido: `[P]` (Presente), `[F]` (Falta), `[FJ]` (Falta Justificada).
@@ -75,7 +75,7 @@ O sistema adota uma arquitetura distribuída, moderna e resiliente:
 - Possibilidade de alterar notas e faltas com registro obrigatório de auditoria.
 - Criação e gestão do cronograma escolar e calendário de eventos.
 - Gestão de usuários (criação, exclusão e atribuição de perfis: Aluno, Professor ou Coordenador).
-- Painel de auditoria global consultando o banco secundário MySQL.
+- Painel de auditoria global consultando o banco secundário MongoDB.
 
 ### 🎓 3. Portal do Aluno
 - Visualização das alterações feitas sobre seus próprios dados.
@@ -134,7 +134,7 @@ docker compose up -d
 
 Esse comando inicializa automaticamente os 5 containers:
 - `escola-postgres`: PostgreSQL na porta `5433` (mapeada para `5432`)
-- `escola-mysql`: MySQL na porta `3307` (mapeada para `3306`)
+- `escola-mongodb`: MongoDB na porta `27017`
 - `escola-python-analytics`: FastAPI na porta `8000`
 - `escola-backend-spring`: Spring Boot na porta `8080`
 - `escola-frontend-angular`: Angular + Nginx na porta `4200`
@@ -187,10 +187,10 @@ curl -X POST http://localhost:8080/api/professor/notas \
   }'
 ```
 
-#### 4. Consultar Auditoria no Banco Secundário (MySQL)
+#### 4. Consultar Auditoria no Banco Secundário (MongoDB)
 ```bash
-docker exec -it escola-mysql mysql -uroot -pmysql123 escola_secundaria \
-  -e "SELECT id, usuarioNome, acao, entidade, dadosNovos, dataHora FROM audit_logs ORDER BY id DESC LIMIT 5;"
+docker exec -it escola-mongodb mongosh escola_secundaria \
+  --eval "db.audit_logs.find().sort({dataHora: -1}).limit(5)"
 ```
 
 ---
@@ -205,12 +205,12 @@ Sistema-Escolar/
 │   ├── pom.xml
 │   ├── Dockerfile
 │   └── src/main/java/br/com/escola/
-│       ├── config/                 # Configuração multi-datasources e Spring Security JWT
+│       ├── config/                 # Configuração Postgres (JPA), MongoDB e Spring Security JWT
 │       ├── controller/             # REST Endpoints (Auth, Professor, Aluno, Coordenador)
 │       ├── domain/                 # Entidades PostgreSQL (User, Turma, Nota, Frequencia)
-│       ├── domain/secondary/       # Entidades MySQL (AuditLog, ReportHistory)
+│       ├── domain/secondary/       # Documentos MongoDB (AuditLog, ReportHistory)
 │       ├── dto/                    # DTOs de requisição e resposta
-│       ├── repository/             # Repositórios Spring Data JPA (Postgres & MySQL)
+│       ├── repository/             # Repositórios Spring Data (Postgres JPA & MongoDB)
 │       ├── security/               # Filtros JWT e UserDetailsService
 │       └── service/                # Business Rules (CalculoMediaService, FrequenciaService, AuditService)
 ├── python-analytics/               # Microserviço Python de Análise de Dados

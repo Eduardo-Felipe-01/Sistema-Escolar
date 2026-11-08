@@ -16,12 +16,11 @@ spring:
       username: ${POSTGRES_USER:postgres}
       password: ${POSTGRES_PASSWORD:postgres123}
       driver-class-name: org.postgresql.Driver
-    # Secondary Database: MySQL
-    mysql:
-      url: ${MYSQL_URL:jdbc:mysql://localhost:3307/escola_secundaria?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
-      username: ${MYSQL_USER:root}
-      password: ${MYSQL_PASSWORD:mysql123}
-      driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # Secondary Database: MongoDB
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/escola_secundaria}
 
 app:
   jwt:

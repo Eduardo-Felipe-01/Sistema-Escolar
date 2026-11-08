@@ -94,7 +94,7 @@ public class CoordenadorController {
 
     @PostMapping("/validar-relatorio/{reportId}")
     public ResponseEntity<ReportHistory> validarRelatorio(
-            @PathVariable Long reportId,
+            @PathVariable String reportId,
             @AuthenticationPrincipal CustomUserDetails user) {
         ReportHistory rep = reportHistoryRepository.findById(reportId)
                 .orElseThrow(() -> new IllegalArgumentException("Relatório não encontrado: " + reportId));

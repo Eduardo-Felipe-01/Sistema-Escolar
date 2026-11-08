@@ -15,7 +15,7 @@ import { TurmaResumo, NotaAluno } from '../../../core/models/user.model';
       <div class="page-header">
         <div>
           <h1>Lançamento de Avaliações e Notas</h1>
-          <p class="subtitle">Lançamento de notas bimestrais com cálculo automático em tempo real e auditoria em MySQL.</p>
+          <p class="subtitle">Lançamento de notas bimestrais com cálculo automático em tempo real e auditoria em MongoDB.</p>
         </div>
         <div class="actions-header">
           <button (click)="salvarTodas()" class="btn btn-success" [disabled]="salvando">
@@ -448,7 +448,7 @@ export class NotasComponent implements OnInit {
         nota.id = resp.id;
         nota.mediaBimestre = resp.mediaBimestre;
         nota.status = resp.status;
-        this.mostrarMensagem(`Nota de ${nota.alunoNome} salva com sucesso e registrada na auditoria do MySQL!`);
+        this.mostrarMensagem(`Nota de ${nota.alunoNome} salva com sucesso e registrada na auditoria do MongoDB!`);
       },
       error: (err) => alert('Erro ao salvar nota: ' + (err.error?.message || 'Falha de conexão'))
     });

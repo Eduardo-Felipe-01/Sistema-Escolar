@@ -4,9 +4,9 @@ import br.com.escola.domain.*;
 import br.com.escola.domain.secondary.ReportHistory;
 import br.com.escola.dto.*;
 import br.com.escola.repository.*;
+import br.com.escola.repository.secondary.ReportHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ public class ProfessorService {
     private final MatriculaRepository matriculaRepository;
     private final NotaRepository notaRepository;
     private final FrequenciaRepository frequenciaRepository;
-    private final JdbcTemplate mysqlJdbcTemplate;
+    private final ReportHistoryRepository reportHistoryRepository;
     private final CalculoMediaService calculoMediaService;
     private final FrequenciaService frequenciaService;
     private final AuditService auditService;
@@ -182,7 +182,7 @@ public class ProfessorService {
         String dadosNovos = String.format("{\"n1\":%s,\"n2\":%s,\"trab\":%s,\"rec\":%s,\"media\":%s,\"status\":\"%s\"}",
                 salva.getNota1(), salva.getNota2(), salva.getTrabalho(), salva.getRecuperacao(), salva.getMediaBimestre(), salva.getStatus());
 
-        // Registrar auditoria no MySQL
+        // Registrar auditoria no MongoDB
         auditService.registrar(
                 autor.getId(),
                 autor.getNome(),
@@ -277,7 +277,7 @@ public class ProfessorService {
 
             String dadosNovos = String.format("{\"p\":%d,\"f\":%d,\"j\":%b}", salva.getPresencas(), salva.getFaltas(), salva.getJustificada());
 
-            // Gravar auditoria no MySQL
+            // Gravar auditoria no MongoDB
             auditService.registrar(
                     autor.getId(),
                     autor.getNome(),
@@ -292,7 +292,7 @@ public class ProfessorService {
         }
     }
 
-    @Transactional("mysqlTransactionManager")
+    @Transactional(value = "postgresTransactionManager", readOnly = true)
     public Map<String, Object> gerarRelatorioTurma(Long turmaId, Long disciplinaId, Long professorId) {
         validarVinculo(professorId, turmaId, disciplinaId);
 
@@ -343,12 +343,19 @@ public class ProfessorService {
 
         double mediaTurma = totalNotas > 0 ? Math.round((somaMedias / totalNotas) * 100.0) / 100.0 : 0.0;
 
-        // Registrar emissão de relatório no MySQL via JdbcTemplate
+        // Registrar emissão de relatório no MongoDB
         try {
-            String sql = "INSERT INTO report_history (usuarioId, usuarioNome, tipoRelatorio, parametros, statusValidacao, dataEmissao) VALUES (?, ?, ?, ?, ?, ?)";
-            mysqlJdbcTemplate.update(sql, autor.getId(), autor.getNome(), "BOLETIM_TURMA", String.format("turmaId=%d,disciplinaId=%d", turmaId, disciplinaId), "VALIDADO_AUTOMATICO", LocalDateTime.now());
+            ReportHistory relatorioHist = ReportHistory.builder()
+                    .usuarioId(autor.getId())
+                    .usuarioNome(autor.getNome())
+                    .tipoRelatorio("BOLETIM_TURMA")
+                    .parametros(String.format("turmaId=%d,disciplinaId=%d", turmaId, disciplinaId))
+                    .statusValidacao("VALIDADO_AUTOMATICO")
+                    .dataEmissao(LocalDateTime.now())
+                    .build();
+            reportHistoryRepository.save(relatorioHist);
         } catch (Exception e) {
-            log.warn("Aviso: Falha ao gravar histórico de relatório no MySQL: {}", e.getMessage());
+            log.warn("Aviso: Falha ao gravar histórico de relatório no MongoDB: {}", e.getMessage());
         }
 
         Map<String, Object> response = new HashMap<>();

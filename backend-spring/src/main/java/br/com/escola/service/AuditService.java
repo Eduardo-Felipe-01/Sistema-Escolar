@@ -5,8 +5,6 @@ import br.com.escola.repository.secondary.AuditLogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +13,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class AuditService {
 
-    private final JdbcTemplate mysqlJdbcTemplate;
+    private final AuditLogRepository auditLogRepository;
 
     public void registrar(Long usuarioId,
                           String usuarioNome,
@@ -27,23 +25,23 @@ public class AuditService {
                           String dadosNovos,
                           String ipOrigem) {
         try {
-            String sql = "INSERT INTO audit_logs (usuarioId, usuarioNome, usuarioRole, acao, entidade, entidadeId, dadosAnteriores, dadosNovos, ipOrigem, dataHora) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            mysqlJdbcTemplate.update(
-                    sql,
-                    usuarioId,
-                    usuarioNome,
-                    usuarioRole,
-                    acao,
-                    entidade,
-                    entidadeId,
-                    dadosAnteriores,
-                    dadosNovos,
-                    ipOrigem != null ? ipOrigem : "127.0.0.1",
-                    LocalDateTime.now()
-            );
-            log.info("Auditoria registrada no MySQL secundário com sucesso: [Ação: {}, Entidade: {}, Usuário: {}]", acao, entidade, usuarioNome);
+            AuditLog auditLog = AuditLog.builder()
+                    .usuarioId(usuarioId)
+                    .usuarioNome(usuarioNome)
+                    .usuarioRole(usuarioRole)
+                    .acao(acao)
+                    .entidade(entidade)
+                    .entidadeId(entidadeId)
+                    .dadosAnteriores(dadosAnteriores)
+                    .dadosNovos(dadosNovos)
+                    .ipOrigem(ipOrigem != null ? ipOrigem : "127.0.0.1")
+                    .dataHora(LocalDateTime.now())
+                    .build();
+
+            auditLogRepository.save(auditLog);
+            log.info("Auditoria registrada no MongoDB secundário com sucesso: [Ação: {}, Entidade: {}, Usuário: {}]", acao, entidade, usuarioNome);
         } catch (Exception e) {
-            log.error("Erro ao registrar auditoria secundária no MySQL: {}", e.getMessage(), e);
+            log.error("Erro ao registrar auditoria secundária no MongoDB: {}", e.getMessage(), e);
         }
     }
 }

@@ -13,7 +13,7 @@ import { AuthService } from '../../core/services/auth.service';
       <div class="login-card glass-panel">
         <div class="brand-header">
           <div class="brand-logo">🎓</div>
-          <h2>EducaGestão</h2>
+          <h2>Educa+</h2>
           <p class="subtitle">Sistema Integrado de Gestão Escolar</p>
         </div>
 

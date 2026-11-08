@@ -1,12 +1,12 @@
 package br.com.escola.domain.secondary;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "report_history")
+@Document(collection = "report_history")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,17 +15,14 @@ import java.time.LocalDateTime;
 public class ReportHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private Long usuarioId;
 
     private String usuarioNome;
 
-    @Column(nullable = false)
     private String tipoRelatorio; // BOLETIM_TURMA, FREQUENCIA_DISCIPLINA, DESEMPENHO_ALUNO
 
-    @Column(columnDefinition = "TEXT")
     private String parametros;
 
     private Long alunoId;

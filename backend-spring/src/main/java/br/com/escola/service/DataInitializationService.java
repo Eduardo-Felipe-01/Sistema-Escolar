@@ -221,7 +221,7 @@ public class DataInitializationService implements CommandLineRunner {
                 .descricao("Provas de Matemática, Física e Química")
                 .build());
 
-        // 9. Histórico inicial no MySQL
+        // 9. Histórico inicial no MongoDB
         auditLogRepository.save(AuditLog.builder()
                 .usuarioId(profCarlos.getId())
                 .usuarioNome(profCarlos.getNome())

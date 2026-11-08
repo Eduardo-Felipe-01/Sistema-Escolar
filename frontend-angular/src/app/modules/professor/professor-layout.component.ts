@@ -14,7 +14,7 @@ import { AuthService } from '../../core/services/auth.service';
         <div class="sidebar-brand">
           <span class="brand-icon">📚</span>
           <div class="brand-text">
-            <h2>EducaGestão</h2>
+            <h2>Educa+</h2>
             <span class="badge badge-info">Painel do Professor</span>
           </div>
         </div>

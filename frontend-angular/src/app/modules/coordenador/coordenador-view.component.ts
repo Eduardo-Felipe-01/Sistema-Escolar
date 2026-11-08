@@ -43,7 +43,7 @@ import { AuthService } from '../../core/services/auth.service';
       <!-- Tabs -->
       <div class="tabs-nav">
         <button class="tab-btn" [class.active]="tabAtiva === 'auditoria'" (click)="tabAtiva = 'auditoria'">
-          <span>🛡️</span> Auditoria Global (MySQL)
+          <span>🛡️</span> Auditoria Global (MongoDB)
         </button>
         <button class="tab-btn" [class.active]="tabAtiva === 'cronograma'" (click)="tabAtiva = 'cronograma'">
           <span>📅</span> Cronograma Escolar
@@ -53,10 +53,10 @@ import { AuthService } from '../../core/services/auth.service';
         </button>
       </div>
 
-      <!-- Tab 1: Auditoria do Sistema (MySQL) -->
+      <!-- Tab 1: Auditoria do Sistema (MongoDB) -->
       <div *ngIf="tabAtiva === 'auditoria'" class="glass-panel panel-content">
         <h3>Histórico de Ações e Auditoria Geral da Escola</h3>
-        <p class="subtext">Registrado no banco secundário MySQL em conformidade com as regras de governança.</p>
+        <p class="subtext">Registrado no banco secundário MongoDB em conformidade com as regras de governança.</p>
 
         <div class="table-responsive">
           <table class="custom-table">

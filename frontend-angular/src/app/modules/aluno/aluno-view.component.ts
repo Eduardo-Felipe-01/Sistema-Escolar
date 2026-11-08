@@ -73,12 +73,12 @@ import { AuthService } from '../../core/services/auth.service';
         </div>
       </div>
 
-      <!-- Tab 2: Histórico de Alterações dos Dados do Aluno (do MySQL) -->
+      <!-- Tab 2: Histórico de Alterações dos Dados do Aluno (do MongoDB) -->
       <div *ngIf="tabAtiva === 'historico'" class="tab-content">
         <div class="glass-panel audit-panel">
           <div class="panel-header">
             <h3>Registro de Auditoria de Dados (Transparência do Aluno)</h3>
-            <p>Histórico imutável de quem alterou ou lançou suas notas e frequência no banco de dados secundário MySQL.</p>
+            <p>Histórico imutável de quem alterou ou lançou suas notas e frequência no banco de dados secundário MongoDB.</p>
           </div>
 
           <div *ngIf="historico.length === 0" class="empty-state">
