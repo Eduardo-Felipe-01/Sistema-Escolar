@@ -24,11 +24,25 @@ public class AuditService {
                           String dadosAnteriores,
                           String dadosNovos,
                           String ipOrigem) {
+        registrar(usuarioId, usuarioNome, usuarioRole, null, acao, entidade, entidadeId, dadosAnteriores, dadosNovos, ipOrigem);
+    }
+
+    public void registrar(Long usuarioId,
+                          String usuarioNome,
+                          String usuarioRole,
+                          Long alunoId,
+                          String acao,
+                          String entidade,
+                          Long entidadeId,
+                          String dadosAnteriores,
+                          String dadosNovos,
+                          String ipOrigem) {
         try {
             AuditLog auditLog = AuditLog.builder()
                     .usuarioId(usuarioId)
                     .usuarioNome(usuarioNome)
                     .usuarioRole(usuarioRole)
+                    .alunoId(alunoId)
                     .acao(acao)
                     .entidade(entidade)
                     .entidadeId(entidadeId)

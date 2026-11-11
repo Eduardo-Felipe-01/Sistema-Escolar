@@ -2,8 +2,10 @@ package br.com.escola.service;
 
 import br.com.escola.domain.*;
 import br.com.escola.domain.secondary.AuditLog;
+import br.com.escola.domain.secondary.ReportHistory;
 import br.com.escola.repository.*;
 import br.com.escola.repository.secondary.AuditLogRepository;
+import br.com.escola.repository.secondary.ReportHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -28,12 +30,14 @@ public class DataInitializationService implements CommandLineRunner {
     private final FrequenciaRepository frequenciaRepository;
     private final CronogramaRepository cronogramaRepository;
     private final AuditLogRepository auditLogRepository;
+    private final ReportHistoryRepository reportHistoryRepository;
     private final PasswordEncoder passwordEncoder;
     private final CalculoMediaService calculoMediaService;
 
     @Override
     public void run(String... args) {
         if (userRepository.count() > 0) {
+            garantirDadosSecundariosMongo();
             log.info("Banco de dados já populado. Pulando carga inicial.");
             return;
         }
@@ -222,15 +226,37 @@ public class DataInitializationService implements CommandLineRunner {
                 .build());
 
         // 9. Histórico inicial no MongoDB
+        popularDadosSecundariosMongo(coordenador, profCarlos, alunoLucas, alunoRodrigo, turma3A, mat);
+
+        log.info("Carga inicial concluída com sucesso! Usuários de teste prontos.");
+    }
+
+    private void garantirDadosSecundariosMongo() {
+        if (reportHistoryRepository.count() == 0) {
+            User coordenador = userRepository.findByEmail("coord.ana@escola.com").orElse(null);
+            User profCarlos = userRepository.findByEmail("prof.carlos@escola.com").orElse(null);
+            User alunoLucas = userRepository.findByEmail("aluno.lucas@escola.com").orElse(null);
+            User alunoRodrigo = userRepository.findByEmail("aluno.rodrigo@escola.com").orElse(null);
+            Turma turma3A = turmaRepository.findAll().stream().findFirst().orElse(null);
+            Disciplina mat = disciplinaRepository.findAll().stream().findFirst().orElse(null);
+            if (coordenador != null && profCarlos != null && alunoLucas != null && alunoRodrigo != null && turma3A != null && mat != null) {
+                auditLogRepository.deleteAll();
+                popularDadosSecundariosMongo(coordenador, profCarlos, alunoLucas, alunoRodrigo, turma3A, mat);
+            }
+        }
+    }
+
+    private void popularDadosSecundariosMongo(User coordenador, User profCarlos, User alunoLucas, User alunoRodrigo, Turma turma3A, Disciplina mat) {
         auditLogRepository.save(AuditLog.builder()
                 .usuarioId(profCarlos.getId())
                 .usuarioNome(profCarlos.getNome())
                 .usuarioRole(Role.ROLE_PROFESSOR.name())
+                .alunoId(alunoLucas.getId())
                 .acao("LANCAMENTO_NOTA")
                 .entidade("Nota")
                 .entidadeId(1L)
                 .dadosAnteriores("{}")
-                .dadosNovos("{\"matricula\":\"Lucas Gabriel\",\"disciplina\":\"Matemática\",\"media\":8.9}")
+                .dadosNovos("{\"aluno\":\"Lucas Gabriel Oliveira\",\"disciplina\":\"Matemática\",\"bimestre\":1,\"media\":8.9,\"status\":\"APROVADO\"}")
                 .ipOrigem("127.0.0.1")
                 .dataHora(LocalDateTime.now().minusDays(3))
                 .build());
@@ -239,16 +265,56 @@ public class DataInitializationService implements CommandLineRunner {
                 .usuarioId(coordenador.getId())
                 .usuarioNome(coordenador.getNome())
                 .usuarioRole(Role.ROLE_COORDENADOR.name())
+                .alunoId(alunoLucas.getId())
                 .acao("VALIDACAO_COORDENADOR")
                 .entidade("Nota")
                 .entidadeId(1L)
                 .dadosAnteriores("{}")
-                .dadosNovos("{\"status\":\"Homologado pela Coordenação\"}")
+                .dadosNovos("{\"status\":\"Homologado pela Coordenação\",\"aluno\":\"Lucas Gabriel Oliveira\"}")
                 .ipOrigem("127.0.0.1")
                 .dataHora(LocalDateTime.now().minusDays(1))
                 .build());
 
-        log.info("Carga inicial concluída com sucesso! Usuários de teste prontos.");
+        auditLogRepository.save(AuditLog.builder()
+                .usuarioId(profCarlos.getId())
+                .usuarioNome(profCarlos.getNome())
+                .usuarioRole(Role.ROLE_PROFESSOR.name())
+                .alunoId(alunoRodrigo.getId())
+                .acao("LANCAMENTO_FREQUENCIA")
+                .entidade("Frequencia")
+                .entidadeId(5L)
+                .dadosAnteriores("{}")
+                .dadosNovos("{\"aluno\":\"Rodrigo Matos Ribeiro\",\"disciplina\":\"Matemática\",\"taxaPresenca\":50.0,\"alerta\":\"REPROVADO_FALTA\"}")
+                .ipOrigem("127.0.0.1")
+                .dataHora(LocalDateTime.now().minusHours(12))
+                .build());
+
+        reportHistoryRepository.save(ReportHistory.builder()
+                .usuarioId(profCarlos.getId())
+                .usuarioNome(profCarlos.getNome())
+                .tipoRelatorio("BOLETIM_TURMA")
+                .turmaId(turma3A.getId())
+                .turmaNome(turma3A.getNome())
+                .disciplinaNome(mat.getNome())
+                .alunoId(alunoLucas.getId())
+                .parametros(String.format("turmaId=%d,disciplinaId=%d", turma3A.getId(), mat.getId()))
+                .statusValidacao("VALIDADO_COORDENADOR")
+                .validadoPor(coordenador.getNome())
+                .dataValidacao(LocalDateTime.now().minusDays(1))
+                .dataEmissao(LocalDateTime.now().minusDays(2))
+                .build());
+
+        reportHistoryRepository.save(ReportHistory.builder()
+                .usuarioId(profCarlos.getId())
+                .usuarioNome(profCarlos.getNome())
+                .tipoRelatorio("FREQUENCIA_DISCIPLINA")
+                .turmaId(turma3A.getId())
+                .turmaNome(turma3A.getNome())
+                .disciplinaNome(mat.getNome())
+                .parametros(String.format("turmaId=%d,disciplinaId=%d", turma3A.getId(), mat.getId()))
+                .statusValidacao("PENDENTE")
+                .dataEmissao(LocalDateTime.now().minusHours(6))
+                .build());
     }
 
     private void criarNota(Matricula mat, Disciplina disc, int bimestre, double n1, double n2, double trab, Double rec) {

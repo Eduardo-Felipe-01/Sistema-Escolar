@@ -179,7 +179,8 @@ public class ProfessorService {
 
         Nota salva = notaRepository.save(nota);
 
-        String dadosNovos = String.format("{\"n1\":%s,\"n2\":%s,\"trab\":%s,\"rec\":%s,\"media\":%s,\"status\":\"%s\"}",
+        String dadosNovos = String.format("{\"aluno\":\"%s\",\"disciplina\":\"%s\",\"bimestre\":%d,\"n1\":%s,\"n2\":%s,\"trab\":%s,\"rec\":%s,\"media\":%s,\"status\":\"%s\"}",
+                matricula.getAluno().getNome(), disciplina.getNome(), salva.getBimestre(),
                 salva.getNota1(), salva.getNota2(), salva.getTrabalho(), salva.getRecuperacao(), salva.getMediaBimestre(), salva.getStatus());
 
         // Registrar auditoria no MongoDB
@@ -187,6 +188,7 @@ public class ProfessorService {
                 autor.getId(),
                 autor.getNome(),
                 autor.getRole().name(),
+                matricula.getAluno().getId(),
                 acao,
                 "Nota",
                 salva.getId(),
@@ -275,13 +277,16 @@ public class ProfessorService {
             // Verificar se atinge limite de reprovação automática por falta
             frequenciaService.verificarEAtualizarReprovacaoPorFalta(matricula, disciplina.getId());
 
-            String dadosNovos = String.format("{\"p\":%d,\"f\":%d,\"j\":%b}", salva.getPresencas(), salva.getFaltas(), salva.getJustificada());
+            String dadosNovos = String.format("{\"aluno\":\"%s\",\"disciplina\":\"%s\",\"data\":\"%s\",\"p\":%d,\"f\":%d,\"j\":%b}",
+                    matricula.getAluno().getNome(), disciplina.getNome(), req.getData(),
+                    salva.getPresencas(), salva.getFaltas(), salva.getJustificada());
 
             // Gravar auditoria no MongoDB
             auditService.registrar(
                     autor.getId(),
                     autor.getNome(),
                     autor.getRole().name(),
+                    matricula.getAluno().getId(),
                     "LANCAMENTO_FREQUENCIA",
                     "Frequencia",
                     salva.getId(),
@@ -349,8 +354,13 @@ public class ProfessorService {
                     .usuarioId(autor.getId())
                     .usuarioNome(autor.getNome())
                     .tipoRelatorio("BOLETIM_TURMA")
+                    .turmaId(turma.getId())
+                    .turmaNome(turma.getNome())
+                    .disciplinaNome(disciplina.getNome())
                     .parametros(String.format("turmaId=%d,disciplinaId=%d", turmaId, disciplinaId))
-                    .statusValidacao("VALIDADO_AUTOMATICO")
+                    .statusValidacao(autor.getRole() == Role.ROLE_COORDENADOR ? "VALIDADO_COORDENADOR" : "PENDENTE")
+                    .validadoPor(autor.getRole() == Role.ROLE_COORDENADOR ? autor.getNome() : null)
+                    .dataValidacao(autor.getRole() == Role.ROLE_COORDENADOR ? LocalDateTime.now() : null)
                     .dataEmissao(LocalDateTime.now())
                     .build();
             reportHistoryRepository.save(relatorioHist);

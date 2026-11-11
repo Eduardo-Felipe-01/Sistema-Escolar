@@ -77,6 +77,9 @@ public class FrequenciaService {
                 matricula.setStatus(StatusMatricula.REPROVADO_FALTA);
                 matriculaRepository.save(matricula);
             }
+        } else if (matricula.getStatus() == StatusMatricula.REPROVADO_FALTA) {
+            matricula.setStatus(StatusMatricula.CURSANDO);
+            matriculaRepository.save(matricula);
         }
     }
 }

@@ -32,10 +32,11 @@ services:
     volumes:
       - mongo_data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      timeout: 5s
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 15s
       retries: 10
+      start_period: 15s
 
   # 3. Microserviço Python de Processamento e Análise Estatística
   python-analytics:

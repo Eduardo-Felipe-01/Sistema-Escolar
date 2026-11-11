@@ -36,6 +36,10 @@ import { AuthService } from '../../core/services/auth.service';
             <span class="nav-icon">📑</span>
             <span>Emissão de Relatórios</span>
           </a>
+          <a *ngIf="auth.currentUser()?.role === 'ROLE_COORDENADOR'" routerLink="/coordenador" class="nav-item" style="margin-top: 0.75rem; border: 1px dashed rgba(99, 102, 241, 0.5);">
+            <span class="nav-icon">👔</span>
+            <span>Painel da Coordenação</span>
+          </a>
         </nav>
 
         <div class="sidebar-footer">

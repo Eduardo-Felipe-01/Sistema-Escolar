@@ -25,6 +25,12 @@ public class ReportHistory {
 
     private String parametros;
 
+    private Long turmaId;
+
+    private String turmaNome;
+
+    private String disciplinaNome;
+
     private Long alunoId;
 
     @Builder.Default

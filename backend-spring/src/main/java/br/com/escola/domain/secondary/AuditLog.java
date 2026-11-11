@@ -23,6 +23,8 @@ public class AuditLog {
 
     private String usuarioRole;
 
+    private Long alunoId;
+
     private String acao; // LANCAMENTO_NOTA, ALTERACAO_NOTA, LANCAMENTO_FREQUENCIA, VALIDACAO_COORDENADOR, etc.
 
     private String entidade; // Nota, Frequencia, Usuario, Matricula

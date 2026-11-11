@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/aluno")
@@ -47,6 +48,7 @@ public class AlunoController {
 
             List<Map<String, Object>> listaNotas = new ArrayList<>();
             for (Nota n : notas) {
+                FrequenciaResumoAlunoDTO freqResumo = frequenciaService.calcularResumo(m, n.getDisciplina().getId());
                 Map<String, Object> nMap = new HashMap<>();
                 nMap.put("disciplina", n.getDisciplina().getNome());
                 nMap.put("bimestre", n.getBimestre());
@@ -56,6 +58,9 @@ public class AlunoController {
                 nMap.put("recuperacao", n.getRecuperacao());
                 nMap.put("media", n.getMediaBimestre());
                 nMap.put("status", n.getStatus());
+                nMap.put("taxaPresenca", freqResumo.getTaxaPresenca());
+                nMap.put("totalFaltas", freqResumo.getTotalFaltas());
+                nMap.put("reprovadoPorFalta", freqResumo.getReprovadoPorFalta());
                 listaNotas.add(nMap);
             }
             matMap.put("notas", listaNotas);
@@ -67,15 +72,19 @@ public class AlunoController {
 
     @GetMapping("/meu-historico")
     public ResponseEntity<List<AuditLog>> getMeuHistorico(@AuthenticationPrincipal CustomUserDetails user) {
-        // Aluno visualiza alterações feitas sobre seus próprios dados
-        List<AuditLog> logs = auditLogRepository.findByUsuarioIdOrderByDataHoraDesc(user.getId());
+        // Aluno visualiza alterações feitas sobre seus próprios dados (por alunoId ou usuarioId)
+        List<AuditLog> logs = auditLogRepository.findByAlunoIdOrUsuarioIdOrderByDataHoraDesc(user.getId(), user.getId());
         return ResponseEntity.ok(logs);
     }
 
     @GetMapping("/meus-relatorios")
     public ResponseEntity<List<ReportHistory>> getMeusRelatorios(@AuthenticationPrincipal CustomUserDetails user) {
-        // Aluno visualiza as emissões de relatórios referentes a ele
-        List<ReportHistory> relatorios = reportHistoryRepository.findByAlunoIdOrderByDataEmissaoDesc(user.getId());
+        // Aluno visualiza as emissões de relatórios referentes a ele ou à sua turma
+        List<Long> turmaIds = matriculaRepository.findByAlunoId(user.getId())
+                .stream()
+                .map(m -> m.getTurma().getId())
+                .collect(Collectors.toList());
+        List<ReportHistory> relatorios = reportHistoryRepository.findByAlunoIdOrTurmaIdInOrderByDataEmissaoDesc(user.getId(), turmaIds);
         return ResponseEntity.ok(relatorios);
     }
 }

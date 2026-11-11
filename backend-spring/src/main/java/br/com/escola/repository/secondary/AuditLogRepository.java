@@ -10,5 +10,7 @@ import java.util.List;
 public interface AuditLogRepository extends MongoRepository<AuditLog, String> {
     List<AuditLog> findTop50ByOrderByDataHoraDesc();
     List<AuditLog> findByUsuarioIdOrderByDataHoraDesc(Long usuarioId);
+    List<AuditLog> findByAlunoIdOrderByDataHoraDesc(Long alunoId);
+    List<AuditLog> findByAlunoIdOrUsuarioIdOrderByDataHoraDesc(Long alunoId, Long usuarioId);
     List<AuditLog> findByEntidadeAndEntidadeIdOrderByDataHoraDesc(String entidade, Long entidadeId);
 }

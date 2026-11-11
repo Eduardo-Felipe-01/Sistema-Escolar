@@ -6,8 +6,6 @@
 
 ## 🏛️ Arquitetura:
 
-
-
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                 Frontend Web: Angular 19                 │
@@ -79,7 +77,7 @@
 
 ### 🎓 3. Portal do Aluno
 - Visualização das alterações feitas sobre seus próprios dados.
-- Visualização do boletim com notas e médias por disciplina e bimestre.
+- Visualização do boletim com notas, médias e presença por disciplina e bimestre.
 - Histórico transparente de auditoria de alterações ocorridas em suas notas e frequência.
 - Acompanhamento de emissão de relatórios escolares referentes à sua matrícula.
 
@@ -201,6 +199,7 @@ docker exec -it escola-mongodb mongosh escola_secundaria \
 Sistema-Escolar/
 ├── docker-compose.yml              # Orquestração geral dos containers
 ├── README.md                       # Documentação do projeto
+├── docs/mockups/                   # Protótipos das interfaces Web e Mobile
 ├── backend-spring/                 # Backend Java + Spring Boot
 │   ├── pom.xml
 │   ├── Dockerfile
@@ -236,4 +235,12 @@ Sistema-Escolar/
 
 ---
 
-##
+## 🎨 Protótipos e Interfaces (Mockups)
+
+Os protótipos visuais das interfaces Web e Mobile para cada perfil encontram-se em `docs/mockups/`:
+
+| Perfil | Versão Web | Versão Mobile |
+| :--- | :---: | :---: |
+| **Painel do Professor** | ![Professor Web](docs/mockups/mockup-professor-web.jpg) | ![Professor Mobile](docs/mockups/mockup-professor-mobile.jpg) |
+| **Painel da Coordenação** | ![Coordenador Web](docs/mockups/mockup-coordenador-web.jpg) | ![Coordenador Mobile](docs/mockups/mockup-coordenador-mobile.jpg) |
+| **Portal do Aluno** | ![Aluno Web](docs/mockups/mockup-aluno-web.jpg) | ![Aluno Mobile](docs/mockups/mockup-aluno-mobile.jpg) |

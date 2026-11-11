@@ -37,7 +37,9 @@ import { AuthService } from '../../core/services/auth.service';
         <div *ngFor="let turma of boletins" class="glass-panel boletim-card">
           <div class="card-header">
             <h3>{{ turma.turmaNome }}</h3>
-            <span class="badge badge-info">{{ turma.status }}</span>
+            <span class="badge" [ngClass]="turma.status === 'REPROVADO_FALTA' ? 'badge-danger' : 'badge-info'">
+              {{ turma.status }}
+            </span>
           </div>
 
           <table class="custom-table">
@@ -50,6 +52,7 @@ import { AuthService } from '../../core/services/auth.service';
                 <th style="text-align: center;">Trabalho</th>
                 <th style="text-align: center;">Recuperação</th>
                 <th style="text-align: center;">Média</th>
+                <th style="text-align: center;">Presença</th>
                 <th style="text-align: center;">Situação</th>
               </tr>
             </thead>
@@ -63,6 +66,14 @@ import { AuthService } from '../../core/services/auth.service';
                 <td style="text-align: center;">{{ n.recuperacao ?? '-' }}</td>
                 <td style="text-align: center;"><strong>{{ n.media ?? '-' }}</strong></td>
                 <td style="text-align: center;">
+                  <span [style.color]="n.reprovadoPorFalta ? '#ef4444' : 'inherit'">
+                    {{ n.taxaPresenca ?? 100 }}% ({{ n.totalFaltas ?? 0 }} faltas)
+                  </span>
+                </td>
+                <td style="text-align: center;">
+                  <span *ngIf="n.reprovadoPorFalta" class="badge badge-danger" style="margin-right: 4px;">
+                    ⚠️ REPROVADO POR FALTA
+                  </span>
                   <span class="badge" [ngClass]="n.status === 'APROVADO' ? 'badge-success' : 'badge-warning'">
                     {{ n.status }}
                   </span>
@@ -104,7 +115,7 @@ import { AuthService } from '../../core/services/auth.service';
         <div class="glass-panel audit-panel">
           <div class="panel-header">
             <h3>Emissões de Relatórios Referentes ao Estudante</h3>
-            <p>Visualização das emissões pedagógicas e boletins gerados pela escola sobre você.</p>
+            <p>Visualização das emissões pedagógicas e boletins gerados pela escola sobre você e sua turma.</p>
           </div>
 
           <div *ngIf="relatorios.length === 0" class="empty-state">
@@ -117,8 +128,13 @@ import { AuthService } from '../../core/services/auth.service';
               <small>{{ r.dataEmissao | date:'dd/MM/yyyy HH:mm' }}</small>
             </div>
             <div class="log-details">
+              <strong>Turma / Disciplina:</strong> {{ r.turmaNome || 'Turma Matriculada' }} <span *ngIf="r.disciplinaNome">- {{ r.disciplinaNome }}</span><br>
               <strong>Emitido por:</strong> {{ r.usuarioNome }}<br>
-              <strong>Status de Validação:</strong> {{ r.statusValidacao }}
+              <strong>Status de Validação:</strong>
+              <span class="badge" [ngClass]="r.statusValidacao === 'VALIDADO_COORDENADOR' ? 'badge-success' : 'badge-warning'" style="margin-left: 6px;">
+                {{ r.statusValidacao }}
+              </span>
+              <span *ngIf="r.validadoPor"> (Homologado por {{ r.validadoPor }})</span>
             </div>
           </div>
         </div>
@@ -144,6 +160,7 @@ import { AuthService } from '../../core/services/auth.service';
       margin-bottom: 1.5rem;
       border-bottom: 1px solid var(--border-subtle);
       padding-bottom: 0.5rem;
+      flex-wrap: wrap;
     }
     .tab-btn {
       display: flex;
@@ -169,7 +186,13 @@ import { AuthService } from '../../core/services/auth.service';
       padding: 1.5rem;
       margin-bottom: 1.5rem;
     }
-    .card-header, .panel-header {
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .panel-header {
       margin-bottom: 1.25rem;
     }
     .panel-header p {
@@ -190,7 +213,7 @@ import { AuthService } from '../../core/services/auth.service';
       margin-bottom: 0.5rem;
     }
     .log-badge small { color: var(--text-muted); }
-    .log-details { font-size: 0.85rem; line-height: 1.5; }
+    .log-details { font-size: 0.85rem; line-height: 1.6; }
     .log-details code {
       display: block;
       margin-top: 0.35rem;
