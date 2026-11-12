@@ -19,14 +19,14 @@ import { TurmaResumo, NotaAluno } from '../../../core/models/user.model';
         </div>
         <div class="actions-header">
           <button (click)="salvarTodas()" class="btn btn-success" [disabled]="salvando">
-            <span>💾</span> Salvar Todas as Notas
+            <i class="fa-solid fa-floppy-disk"></i> Salvar Todas as Notas
           </button>
         </div>
       </div>
 
       <!-- Notification Banner -->
       <div *ngIf="mensagemSucesso" class="alert-banner success-banner">
-        <span>✅</span> {{ mensagemSucesso }}
+        <i class="fa-solid fa-circle-check"></i> {{ mensagemSucesso }}
       </div>
 
       <!-- Filters Panel -->
@@ -149,7 +149,7 @@ import { TurmaResumo, NotaAluno } from '../../../core/models/user.model';
                 </td>
                 <td style="text-align: center;">
                   <button (click)="salvarNotaIndividual(nota)" class="btn btn-secondary btn-sm" title="Salvar Nota">
-                    💾
+                    <i class="fa-solid fa-floppy-disk"></i>
                   </button>
                 </td>
               </tr>

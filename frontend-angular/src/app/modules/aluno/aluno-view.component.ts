@@ -18,20 +18,20 @@ import { AuthService } from '../../core/services/auth.service';
           </div>
         </div>
         <button (click)="auth.logout()" class="btn btn-secondary btn-sm">
-          <span>🚪</span> Sair
+          <i class="fa-solid fa-right-from-bracket"></i> Sair
         </button>
       </div>
 
       <!-- Tabs Navigation -->
       <div class="tabs-nav">
         <button class="tab-btn" [class.active]="tabAtiva === 'boletim'" (click)="tabAtiva = 'boletim'">
-          <span>📊</span> Meu Boletim Escolar
+          <i class="fa-solid fa-chart-simple"></i> Meu Boletim Escolar
         </button>
         <button class="tab-btn" [class.active]="tabAtiva === 'historico'" (click)="tabAtiva = 'historico'">
-          <span>🕒</span> Histórico de Alterações dos Meus Dados
+          <i class="fa-solid fa-clock-rotate-left"></i> Histórico de Alterações dos Meus Dados
         </button>
         <button class="tab-btn" [class.active]="tabAtiva === 'relatorios'" (click)="tabAtiva = 'relatorios'">
-          <span>📑</span> Emissões de Relatórios Referentes a Mim
+          <i class="fa-solid fa-file-lines"></i> Emissões de Relatórios Referentes a Mim
         </button>
       </div>
 
@@ -75,7 +75,7 @@ import { AuthService } from '../../core/services/auth.service';
                 </td>
                 <td style="text-align: center;">
                   <span *ngIf="n.reprovadoPorFalta" class="badge badge-danger" style="margin-right: 4px;">
-                    ⚠️ REPROVADO POR FALTA
+                    <i class="fa-solid fa-triangle-exclamation"></i> REPROVADO POR FALTA
                   </span>
                   <span class="badge" [ngClass]="n.status === 'APROVADO' ? 'badge-success' : 'badge-warning'">
                     {{ n.status }}

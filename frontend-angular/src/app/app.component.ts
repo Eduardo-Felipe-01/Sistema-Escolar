@@ -34,7 +34,9 @@ import { AccessibilityService, DaltonismoMode } from './core/services/accessibil
           </div>
 
           <div class="a11y-section">
-            <label class="a11y-label" for="daltonismo-select">👁️ Modo de Daltonismo / Contraste</label>
+            <label class="a11y-label" for="daltonismo-select">
+              <i class="fa-solid fa-eye"></i> Modo de Daltonismo / Contraste
+            </label>
             <select
               id="daltonismo-select"
               [value]="a11y.currentDaltonismo()"
@@ -51,7 +53,9 @@ import { AccessibilityService, DaltonismoMode } from './core/services/accessibil
           </div>
 
           <div class="a11y-section">
-            <span class="a11y-label">🔤 Tamanho da Fonte</span>
+            <span class="a11y-label">
+              <i class="fa-solid fa-font"></i> Tamanho da Fonte
+            </span>
             <div class="font-controls">
               <button
                 type="button"
@@ -84,7 +88,7 @@ import { AccessibilityService, DaltonismoMode } from './core/services/accessibil
         class="floating-theme-btn"
         [title]="a11y.isLightMode() ? 'Ativar Modo Escuro' : 'Ativar Modo Claro'"
         [attr.aria-label]="a11y.isLightMode() ? 'Ativar Modo Escuro' : 'Ativar Modo Claro'">
-        <span class="theme-icon">{{ a11y.isLightMode() ? '🌙' : '☀️' }}</span>
+        <i class="fa-solid theme-icon" [ngClass]="a11y.isLightMode() ? 'fa-moon' : 'fa-sun'"></i>
         <span class="theme-text">{{ a11y.isLightMode() ? 'Escuro' : 'Claro' }}</span>
       </button>
     </div>

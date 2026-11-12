@@ -20,7 +20,7 @@ import { TurmaResumo } from '../../../core/models/user.model';
         </div>
         <div class="actions-header">
           <button (click)="imprimir()" class="btn btn-secondary">
-            <span>🖨️</span> Imprimir / Salvar PDF
+            <i class="fa-solid fa-print"></i> Imprimir / Salvar PDF
           </button>
         </div>
       </div>
@@ -36,7 +36,7 @@ import { TurmaResumo } from '../../../core/models/user.model';
           </select>
         </div>
         <button (click)="gerarRelatorio()" class="btn btn-primary" [disabled]="loading">
-          <span>🔄</span> Atualizar Relatório
+          <i class="fa-solid fa-rotate"></i> Atualizar Relatório
         </button>
       </div>
 
@@ -73,7 +73,7 @@ import { TurmaResumo } from '../../../core/models/user.model';
         <!-- Python Analytics Section -->
         <div *ngIf="analisePython" class="analytics-card no-print">
           <div class="analytics-title">
-            <span>🐍</span>
+            <i class="fa-brands fa-python" style="color: var(--primary); font-size: 1.25rem;"></i>
             <h3>Insights do Microserviço Python de Análise de Dados</h3>
           </div>
 

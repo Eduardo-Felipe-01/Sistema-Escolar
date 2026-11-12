@@ -17,8 +17,8 @@ import { TurmaResumo } from '../../../core/models/user.model';
           <p class="subtitle">Bem-vindo(a)! Gerencie suas turmas, lance avaliações e acompanhe a frequência escolar.</p>
         </div>
         <div class="header-badges">
-          <span class="badge badge-success">● Ano Letivo 2026 Ativo</span>
-          <span class="badge badge-info">1º Bimestre em Aberto</span>
+          <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> Ano Letivo 2026 Ativo</span>
+          <span class="badge badge-info"><i class="fa-regular fa-calendar"></i> 1º Bimestre em Aberto</span>
         </div>
       </div>
 
@@ -31,12 +31,12 @@ import { TurmaResumo } from '../../../core/models/user.model';
           (click)="rolarParaTurmas()"
           (keydown.enter)="rolarParaTurmas()"
           title="Ir para Turmas e Disciplinas Vinculadas">
-          <div class="metric-icon">🏫</div>
+          <div class="metric-icon"><i class="fa-solid fa-school"></i></div>
           <div class="metric-content">
             <span class="metric-label">Minhas Turmas</span>
             <strong class="metric-value">{{ turmas.length }}</strong>
             <span class="metric-sub">Matutino e Vespertino</span>
-            <span class="metric-link">Ver turmas ↓</span>
+            <span class="metric-link">Ver turmas <i class="fa-solid fa-arrow-down"></i></span>
           </div>
         </div>
 
@@ -47,12 +47,12 @@ import { TurmaResumo } from '../../../core/models/user.model';
           (click)="abrirRelatorioGeral()"
           (keydown.enter)="abrirRelatorioGeral()"
           title="Ver listagem e desempenho dos estudantes nos Relatórios">
-          <div class="metric-icon">👥</div>
+          <div class="metric-icon"><i class="fa-solid fa-users"></i></div>
           <div class="metric-content">
             <span class="metric-label">Total de Estudantes</span>
             <strong class="metric-value">{{ totalEstudantes }}</strong>
             <span class="metric-sub">Em acompanhamento contínuo</span>
-            <span class="metric-link">Ver estudantes →</span>
+            <span class="metric-link">Ver estudantes <i class="fa-solid fa-arrow-right"></i></span>
           </div>
         </div>
 
@@ -63,12 +63,12 @@ import { TurmaResumo } from '../../../core/models/user.model';
           (click)="abrirLancamentoNotas()"
           (keydown.enter)="abrirLancamentoNotas()"
           title="Ir para Lançamento de Avaliações e Notas">
-          <div class="metric-icon">🎯</div>
+          <div class="metric-icon"><i class="fa-solid fa-bullseye"></i></div>
           <div class="metric-content">
             <span class="metric-label">Média das Turmas</span>
             <strong class="metric-value text-accent">7.4</strong>
             <span class="metric-sub">Acima da média mínima (6.0)</span>
-            <span class="metric-link">Lançar notas →</span>
+            <span class="metric-link">Lançar notas <i class="fa-solid fa-arrow-right"></i></span>
           </div>
         </div>
 
@@ -79,12 +79,12 @@ import { TurmaResumo } from '../../../core/models/user.model';
           (click)="abrirDiarioFrequencia()"
           (keydown.enter)="abrirDiarioFrequencia()"
           title="Ir para Diário de Frequência e Chamada Escolar">
-          <div class="metric-icon">✅</div>
+          <div class="metric-icon"><i class="fa-solid fa-clipboard-check"></i></div>
           <div class="metric-content">
             <span class="metric-label">Assiduidade Geral</span>
             <strong class="metric-value text-success">89.2%</strong>
             <span class="metric-sub">Frequência mínima exigida: 75%</span>
-            <span class="metric-link">Fazer chamada →</span>
+            <span class="metric-link">Fazer chamada <i class="fa-solid fa-arrow-right"></i></span>
           </div>
         </div>
       </div>
@@ -127,13 +127,13 @@ import { TurmaResumo } from '../../../core/models/user.model';
 
           <div class="turma-actions">
             <button (click)="irParaNotas(turma)" class="btn btn-primary btn-sm">
-              <span>📝</span> Lançar Notas
+              <i class="fa-solid fa-pen-to-square"></i> Lançar Notas
             </button>
             <button (click)="irParaFrequencia(turma)" class="btn btn-secondary btn-sm">
-              <span>📅</span> Fazer Chamada
+              <i class="fa-solid fa-calendar-check"></i> Fazer Chamada
             </button>
             <button (click)="irParaRelatorios(turma)" class="btn btn-secondary btn-sm">
-              <span>📑</span> Relatório
+              <i class="fa-solid fa-file-lines"></i> Relatório
             </button>
           </div>
         </div>
@@ -141,7 +141,7 @@ import { TurmaResumo } from '../../../core/models/user.model';
 
       <!-- Quick Tips Card -->
       <div class="glass-panel tips-panel">
-        <div class="tips-icon">💡</div>
+        <div class="tips-icon"><i class="fa-solid fa-lightbulb"></i></div>
         <div class="tips-text">
           <strong>Regras Automáticas do Sistema:</strong>
           <p>
@@ -217,8 +217,13 @@ import { TurmaResumo } from '../../../core/models/user.model';
       transform: translateX(2px);
     }
     .metric-icon {
-      font-size: 2rem;
-      padding: 0.7rem;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--primary);
       background: var(--bg-surface-elevated);
       border-radius: var(--radius-md);
       border: 1px solid var(--border-subtle);
@@ -259,6 +264,7 @@ import { TurmaResumo } from '../../../core/models/user.model';
     .metric-link {
       display: inline-flex;
       align-items: center;
+      gap: 0.35rem;
       margin-top: 0.45rem;
       font-size: 0.75rem;
       font-weight: 700;
@@ -344,7 +350,8 @@ import { TurmaResumo } from '../../../core/models/user.model';
       border-left: 4px solid var(--primary);
     }
     .tips-icon {
-      font-size: 2rem;
+      font-size: 1.75rem;
+      color: var(--warning);
     }
     .tips-text strong {
       display: block;

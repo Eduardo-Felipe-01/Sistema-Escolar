@@ -24,21 +24,21 @@ import { AuthService } from '../../core/services/auth.service';
           <span class="quick-label">Acesso Rápido por Perfil:</span>
           <div class="profile-buttons">
             <button type="button" class="btn-profile" [class.active]="email === 'prof.carlos@escola.com'" (click)="selectProfile('prof.carlos@escola.com')">
-              <span class="profile-icon">👨‍🏫</span>
+              <span class="profile-icon"><i class="fa-solid fa-chalkboard-user"></i></span>
               <div class="profile-meta">
                 <strong>Professor</strong>
                 <small>Carlos Mendes</small>
               </div>
             </button>
             <button type="button" class="btn-profile" [class.active]="email === 'coord.ana@escola.com'" (click)="selectProfile('coord.ana@escola.com')">
-              <span class="profile-icon">👔</span>
+              <span class="profile-icon"><i class="fa-solid fa-user-tie"></i></span>
               <div class="profile-meta">
                 <strong>Coordenador</strong>
                 <small>Ana Paula</small>
               </div>
             </button>
             <button type="button" class="btn-profile" [class.active]="email === 'aluno.lucas@escola.com'" (click)="selectProfile('aluno.lucas@escola.com')">
-              <span class="profile-icon">🎓</span>
+              <span class="profile-icon"><i class="fa-solid fa-user-graduate"></i></span>
               <div class="profile-meta">
                 <strong>Aluno</strong>
                 <small>Lucas Gabriel</small>
@@ -75,7 +75,7 @@ import { AuthService } from '../../core/services/auth.service';
           </div>
 
           <div *ngIf="errorMessage" class="error-alert">
-            <span>⚠️</span> {{ errorMessage }}
+            <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMessage }}
           </div>
 
           <button type="submit" class="btn btn-primary btn-block" [disabled]="loading">
@@ -174,8 +174,9 @@ import { AuthService } from '../../core/services/auth.service';
       transform: translateY(-2px);
     }
     .profile-icon {
-      font-size: 1.4rem;
-      margin-bottom: 0.25rem;
+      font-size: 1.35rem;
+      margin-bottom: 0.3rem;
+      color: var(--primary);
     }
     .profile-meta strong {
       display: block;

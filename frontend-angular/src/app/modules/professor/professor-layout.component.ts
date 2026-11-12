@@ -21,37 +21,37 @@ import { AuthService } from '../../core/services/auth.service';
 
         <nav class="sidebar-nav">
           <a routerLink="/professor/dashboard" routerLinkActive="active" class="nav-item">
-            <span class="nav-icon">📊</span>
+            <i class="fa-solid fa-chart-pie nav-icon"></i>
             <span>Visão Geral</span>
           </a>
           <a routerLink="/professor/notas" routerLinkActive="active" class="nav-item">
-            <span class="nav-icon">📝</span>
+            <i class="fa-solid fa-pen-to-square nav-icon"></i>
             <span>Lançamento de Notas</span>
           </a>
           <a routerLink="/professor/frequencia" routerLinkActive="active" class="nav-item">
-            <span class="nav-icon">📅</span>
+            <i class="fa-solid fa-calendar-check nav-icon"></i>
             <span>Diário de Frequência</span>
           </a>
           <a routerLink="/professor/relatorios" routerLinkActive="active" class="nav-item">
-            <span class="nav-icon">📑</span>
+            <i class="fa-solid fa-file-lines nav-icon"></i>
             <span>Emissão de Relatórios</span>
           </a>
           <a *ngIf="auth.currentUser()?.role === 'ROLE_COORDENADOR'" routerLink="/coordenador" class="nav-item" style="margin-top: 0.75rem; border: 1px dashed var(--secondary);">
-            <span class="nav-icon">👔</span>
+            <i class="fa-solid fa-user-tie nav-icon"></i>
             <span>Painel da Coordenação</span>
           </a>
         </nav>
 
         <div class="sidebar-footer">
           <div class="user-card">
-            <div class="avatar">👨‍🏫</div>
+            <div class="avatar"><i class="fa-solid fa-chalkboard-user"></i></div>
             <div class="user-details">
               <strong>{{ auth.currentUser()?.nome || 'Prof. Carlos' }}</strong>
               <small>{{ auth.currentUser()?.matricula || 'PROF-101' }}</small>
             </div>
           </div>
           <button (click)="logout()" class="btn btn-secondary btn-sm btn-logout" title="Sair do Sistema">
-            <span>🚪</span> Sair
+            <i class="fa-solid fa-right-from-bracket"></i> Sair
           </button>
         </div>
       </aside>
@@ -132,7 +132,9 @@ import { AuthService } from '../../core/services/auth.service';
       box-shadow: 0 4px 12px rgba(8, 54, 96, 0.22);
     }
     .nav-icon {
-      font-size: 1.2rem;
+      font-size: 1.05rem;
+      width: 20px;
+      text-align: center;
     }
     .sidebar-footer {
       padding-top: 1.25rem;
@@ -145,11 +147,17 @@ import { AuthService } from '../../core/services/auth.service';
       margin-bottom: 0.75rem;
     }
     .avatar {
-      font-size: 1.8rem;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      color: var(--primary);
       background: var(--bg-surface-elevated);
       border-radius: var(--radius-full);
-      padding: 0.25rem;
       border: 1px solid var(--border-subtle);
+      flex-shrink: 0;
     }
     .user-details strong {
       display: block;

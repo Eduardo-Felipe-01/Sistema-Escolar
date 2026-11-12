@@ -21,17 +21,17 @@ import { AuthService } from '../../core/services/auth.service';
         </div>
         <div class="header-actions">
           <a routerLink="/professor/notas" class="btn btn-primary btn-sm">
-            <span>📝</span> Alterar Notas / Faltas
+            <i class="fa-solid fa-pen-to-square"></i> Alterar Notas / Faltas
           </a>
           <button (click)="auth.logout()" class="btn btn-secondary btn-sm">
-            <span>🚪</span> Sair
+            <i class="fa-solid fa-right-from-bracket"></i> Sair
           </button>
         </div>
       </div>
 
       <!-- Notification Banner -->
       <div *ngIf="mensagemSucesso" class="alert-banner">
-        <span>✅</span> {{ mensagemSucesso }}
+        <i class="fa-solid fa-circle-check"></i> {{ mensagemSucesso }}
       </div>
 
       <!-- Stats Grid -->
@@ -57,16 +57,16 @@ import { AuthService } from '../../core/services/auth.service';
       <!-- Tabs -->
       <div class="tabs-nav">
         <button class="tab-btn" [class.active]="tabAtiva === 'auditoria'" (click)="tabAtiva = 'auditoria'">
-          <span>🛡️</span> Auditoria Global (MongoDB)
+          <i class="fa-solid fa-shield-halved"></i> Auditoria Global (MongoDB)
         </button>
         <button class="tab-btn" [class.active]="tabAtiva === 'relatorios'" (click)="tabAtiva = 'relatorios'">
-          <span>📑</span> Homologação de Relatórios
+          <i class="fa-solid fa-file-circle-check"></i> Homologação de Relatórios
         </button>
         <button class="tab-btn" [class.active]="tabAtiva === 'cronograma'" (click)="tabAtiva = 'cronograma'">
-          <span>📅</span> Cronograma Escolar
+          <i class="fa-solid fa-calendar-days"></i> Cronograma Escolar
         </button>
         <button class="tab-btn" [class.active]="tabAtiva === 'usuarios'" (click)="tabAtiva = 'usuarios'">
-          <span>👥</span> Gestão de Usuários
+          <i class="fa-solid fa-users-gear"></i> Gestão de Usuários
         </button>
       </div>
 
@@ -78,7 +78,7 @@ import { AuthService } from '../../core/services/auth.service';
             <p class="subtext" style="margin-bottom: 0;">Registrado no banco secundário MongoDB em conformidade com as regras de governança.</p>
           </div>
           <button (click)="carregarDados()" class="btn btn-secondary btn-sm">
-            <span>🔄</span> Atualizar
+            <i class="fa-solid fa-rotate"></i> Atualizar
           </button>
         </div>
 
@@ -116,7 +116,7 @@ import { AuthService } from '../../core/services/auth.service';
             <p class="subtext" style="margin-bottom: 0;">Validação das emissões de boletins e relatórios gerados pelos professores.</p>
           </div>
           <a routerLink="/professor/relatorios" class="btn btn-primary btn-sm">
-            <span>📊</span> Emitir Novo Relatório
+            <i class="fa-solid fa-chart-column"></i> Emitir Novo Relatório
           </a>
         </div>
 
@@ -156,9 +156,9 @@ import { AuthService } from '../../core/services/auth.service';
                   <button *ngIf="r.statusValidacao !== 'VALIDADO_COORDENADOR'"
                           (click)="validarRelatorio(r)"
                           class="btn btn-primary btn-sm">
-                    ✅ Homologar
+                    <i class="fa-solid fa-check"></i> Homologar
                   </button>
-                  <span *ngIf="r.statusValidacao === 'VALIDADO_COORDENADOR'" class="text-ok">✔ Homologado</span>
+                  <span *ngIf="r.statusValidacao === 'VALIDADO_COORDENADOR'" class="text-ok"><i class="fa-solid fa-circle-check"></i> Homologado</span>
                 </td>
               </tr>
             </tbody>
@@ -174,7 +174,7 @@ import { AuthService } from '../../core/services/auth.service';
             <p class="subtext" style="margin-bottom: 0;">Definição de bimestres, períodos de provas e eventos escolares.</p>
           </div>
           <button (click)="mostrarFormCronograma = !mostrarFormCronograma" class="btn btn-primary btn-sm">
-            <span>{{ mostrarFormCronograma ? '✖' : '➕' }}</span> {{ mostrarFormCronograma ? 'Fechar Formulário' : 'Novo Evento' }}
+            <i class="fa-solid" [ngClass]="mostrarFormCronograma ? 'fa-xmark' : 'fa-plus'"></i> {{ mostrarFormCronograma ? 'Fechar Formulário' : 'Novo Evento' }}
           </button>
         </div>
 
@@ -209,7 +209,7 @@ import { AuthService } from '../../core/services/auth.service';
             </div>
           </div>
           <div class="form-actions">
-            <button (click)="salvarEvento()" class="btn btn-primary btn-sm">💾 Salvar Evento</button>
+            <button (click)="salvarEvento()" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Salvar Evento</button>
           </div>
         </div>
 
@@ -217,7 +217,7 @@ import { AuthService } from '../../core/services/auth.service';
           <div *ngFor="let c of cronograma" class="c-item glass-card">
             <div class="c-item-top">
               <span class="badge badge-info">{{ c.tipo }}</span>
-              <button (click)="removerEvento(c)" class="btn-icon-danger" title="Remover Evento">🗑️</button>
+              <button (click)="removerEvento(c)" class="btn-icon-danger" title="Remover Evento"><i class="fa-solid fa-trash-can"></i></button>
             </div>
             <h4>{{ c.titulo }}</h4>
             <small>De {{ c.dataInicio }} até {{ c.dataFim }}</small>
@@ -234,7 +234,7 @@ import { AuthService } from '../../core/services/auth.service';
             <p class="subtext" style="margin-bottom: 0;">Criação, exclusão e atribuição de perfis (Aluno, Professor ou Coordenador).</p>
           </div>
           <button (click)="mostrarFormUsuario = !mostrarFormUsuario" class="btn btn-primary btn-sm">
-            <span>{{ mostrarFormUsuario ? '✖' : '➕' }}</span> {{ mostrarFormUsuario ? 'Fechar Formulário' : 'Novo Usuário' }}
+            <i class="fa-solid" [ngClass]="mostrarFormUsuario ? 'fa-xmark' : 'fa-plus'"></i> {{ mostrarFormUsuario ? 'Fechar Formulário' : 'Novo Usuário' }}
           </button>
         </div>
 
@@ -272,7 +272,7 @@ import { AuthService } from '../../core/services/auth.service';
             </div>
           </div>
           <div class="form-actions">
-            <button (click)="criarUsuario()" class="btn btn-primary btn-sm">💾 Cadastrar Usuário</button>
+            <button (click)="criarUsuario()" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Cadastrar Usuário</button>
           </div>
         </div>
 
@@ -306,7 +306,7 @@ import { AuthService } from '../../core/services/auth.service';
                           [disabled]="u.id === auth.currentUser()?.id"
                           class="btn btn-secondary btn-sm"
                           title="Excluir Usuário">
-                    🗑️ Excluir
+                    <i class="fa-solid fa-trash-can"></i> Excluir
                   </button>
                 </td>
               </tr>

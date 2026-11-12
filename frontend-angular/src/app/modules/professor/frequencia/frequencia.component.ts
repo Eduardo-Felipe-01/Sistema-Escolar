@@ -19,17 +19,17 @@ import { TurmaResumo, FrequenciaAluno } from '../../../core/models/user.model';
         </div>
         <div class="actions-header">
           <button (click)="marcarTodosPresentes()" class="btn btn-secondary">
-            <span>✅</span> Todos Presentes
+            <i class="fa-solid fa-check-double"></i> Todos Presentes
           </button>
           <button (click)="salvarChamada()" class="btn btn-primary" [disabled]="salvando">
-            <span>💾</span> Salvar Chamada do Dia
+            <i class="fa-solid fa-floppy-disk"></i> Salvar Chamada do Dia
           </button>
         </div>
       </div>
 
       <!-- Notification Banner -->
       <div *ngIf="mensagemSucesso" class="alert-banner success-banner">
-        <span>✅</span> {{ mensagemSucesso }}
+        <i class="fa-solid fa-circle-check"></i> {{ mensagemSucesso }}
       </div>
 
       <!-- Filters Bar -->
@@ -129,7 +129,7 @@ import { TurmaResumo, FrequenciaAluno } from '../../../core/models/user.model';
                 </td>
                 <td style="text-align: center;">
                   <span *ngIf="aluno.reprovadoPorFalta" class="badge badge-danger">
-                    ⚠️ REPROVADO POR FALTA
+                    <i class="fa-solid fa-triangle-exclamation"></i> REPROVADO POR FALTA
                   </span>
                   <span *ngIf="!aluno.reprovadoPorFalta && aluno.taxaPresenca < 80.0" class="badge badge-warning">
                     ALERTA DE INFREQUÊNCIA
