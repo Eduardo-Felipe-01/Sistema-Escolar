@@ -45,11 +45,21 @@ export class AccessibilityService {
     const next = Math.max(-1, Math.min(2, this.fontSizeLevel() + delta));
     this.fontSizeLevel.set(next);
 
+    const root = document.documentElement;
     const body = document.body;
-    body.classList.remove('font-large', 'font-xlarge');
+    root.classList.remove('font-small', 'font-large', 'font-xlarge');
+    body.classList.remove('font-small', 'font-large', 'font-xlarge');
 
-    if (next === 1) body.classList.add('font-large');
-    if (next === 2) body.classList.add('font-xlarge');
+    if (next === -1) {
+      root.classList.add('font-small');
+      body.classList.add('font-small');
+    } else if (next === 1) {
+      root.classList.add('font-large');
+      body.classList.add('font-large');
+    } else if (next === 2) {
+      root.classList.add('font-xlarge');
+      body.classList.add('font-xlarge');
+    }
   }
 
   toggleLightMode(forceLight?: boolean) {

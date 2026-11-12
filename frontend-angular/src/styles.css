@@ -402,12 +402,16 @@ body.daltonismo-alto-contraste .btn {
 }
 
 /* A11y Font Resizing Classes */
-body.font-large {
-  font-size: 115%;
+html.font-small, body.font-small {
+  font-size: 90%;
 }
 
-body.font-xlarge {
-  font-size: 130%;
+html.font-large, body.font-large {
+  font-size: 112%;
+}
+
+html.font-xlarge, body.font-xlarge {
+  font-size: 125%;
 }
 
 /* Floating Accessibility Toolbar */
