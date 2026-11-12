@@ -98,9 +98,9 @@ import { AccessibilityService, DaltonismoMode } from './core/services/accessibil
   `,
   styles: [`
     .top-floating-controls {
-      position: fixed;
-      top: 1rem;
-      right: 1.5rem;
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
       z-index: 9999;
       display: flex;
       align-items: center;

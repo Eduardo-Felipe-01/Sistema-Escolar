@@ -448,6 +448,20 @@ html.font-xlarge, body.font-xlarge {
   background: var(--primary-light);
 }
 
+/* Espaço reservado nos cabeçalhos de página para os botões de Acessibilidade e Tema no topo direito */
+.header-section,
+.page-header {
+  padding-right: 175px;
+}
+
+@media (max-width: 900px) {
+  .header-section,
+  .page-header {
+    padding-right: 0;
+    padding-top: 3.25rem;
+  }
+}
+
 /* Print styles for reports */
 @media print {
   body {
