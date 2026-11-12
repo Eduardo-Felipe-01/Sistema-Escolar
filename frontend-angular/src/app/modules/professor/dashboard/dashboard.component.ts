@@ -22,47 +22,75 @@ import { TurmaResumo } from '../../../core/models/user.model';
         </div>
       </div>
 
-      <!-- KPI Metrics Grid -->
+      <!-- KPI Metrics Grid (Interactive Cards) -->
       <div class="metrics-grid">
-        <div class="glass-card metric-card">
+        <div
+          class="glass-card metric-card clickable-card"
+          role="button"
+          tabindex="0"
+          (click)="rolarParaTurmas()"
+          (keydown.enter)="rolarParaTurmas()"
+          title="Ir para Turmas e Disciplinas Vinculadas">
           <div class="metric-icon">🏫</div>
           <div class="metric-content">
             <span class="metric-label">Minhas Turmas</span>
             <strong class="metric-value">{{ turmas.length }}</strong>
             <span class="metric-sub">Matutino e Vespertino</span>
+            <span class="metric-link">Ver turmas ↓</span>
           </div>
         </div>
 
-        <div class="glass-card metric-card">
+        <div
+          class="glass-card metric-card clickable-card"
+          role="button"
+          tabindex="0"
+          (click)="abrirRelatorioGeral()"
+          (keydown.enter)="abrirRelatorioGeral()"
+          title="Ver listagem e desempenho dos estudantes nos Relatórios">
           <div class="metric-icon">👥</div>
           <div class="metric-content">
             <span class="metric-label">Total de Estudantes</span>
             <strong class="metric-value">{{ totalEstudantes }}</strong>
             <span class="metric-sub">Em acompanhamento contínuo</span>
+            <span class="metric-link">Ver estudantes →</span>
           </div>
         </div>
 
-        <div class="glass-card metric-card">
+        <div
+          class="glass-card metric-card clickable-card"
+          role="button"
+          tabindex="0"
+          (click)="abrirLancamentoNotas()"
+          (keydown.enter)="abrirLancamentoNotas()"
+          title="Ir para Lançamento de Avaliações e Notas">
           <div class="metric-icon">🎯</div>
           <div class="metric-content">
             <span class="metric-label">Média das Turmas</span>
             <strong class="metric-value text-accent">7.4</strong>
             <span class="metric-sub">Acima da média mínima (6.0)</span>
+            <span class="metric-link">Lançar notas →</span>
           </div>
         </div>
 
-        <div class="glass-card metric-card">
+        <div
+          class="glass-card metric-card clickable-card"
+          role="button"
+          tabindex="0"
+          (click)="abrirDiarioFrequencia()"
+          (keydown.enter)="abrirDiarioFrequencia()"
+          title="Ir para Diário de Frequência e Chamada Escolar">
           <div class="metric-icon">✅</div>
           <div class="metric-content">
             <span class="metric-label">Assiduidade Geral</span>
             <strong class="metric-value text-success">89.2%</strong>
             <span class="metric-sub">Frequência mínima exigida: 75%</span>
+            <span class="metric-link">Fazer chamada →</span>
           </div>
         </div>
       </div>
 
       <!-- Assigned Classes List -->
-      <div class="section-title">
+      <div id="secao-turmas" class="section-title" [class.section-highlight]="destaqueTurmas">
         <h2>Turmas e Disciplinas Vinculadas</h2>
         <p>Acesse rapidamente as ferramentas pedagógicas de cada turma:</p>
       </div>
@@ -148,35 +176,74 @@ import { TurmaResumo } from '../../../core/models/user.model';
     }
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.15rem;
       margin-bottom: 2.5rem;
+    }
+    @media (max-width: 1100px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
     }
     .metric-card {
       display: flex;
       align-items: center;
-      gap: 1.25rem;
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+    .clickable-card {
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      outline: none;
+    }
+    .clickable-card:hover,
+    .clickable-card:focus-visible {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--secondary);
+    }
+    .clickable-card:hover .metric-icon {
+      border-color: var(--secondary);
+      background: var(--primary-light);
+    }
+    .clickable-card:hover .metric-link {
+      color: var(--primary);
+      transform: translateX(2px);
     }
     .metric-icon {
-      font-size: 2.25rem;
-      padding: 0.75rem;
+      font-size: 2rem;
+      padding: 0.7rem;
       background: var(--bg-surface-elevated);
       border-radius: var(--radius-md);
       border: 1px solid var(--border-subtle);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    .metric-content {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
     }
     .metric-label {
       display: block;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      font-weight: 600;
+      font-weight: 700;
     }
     .metric-value {
       display: block;
-      font-size: 1.85rem;
+      font-size: 1.8rem;
       font-family: var(--font-heading);
       line-height: 1.2;
+      margin: 0.1rem 0;
     }
     .text-accent {
       color: var(--secondary);
@@ -187,9 +254,26 @@ import { TurmaResumo } from '../../../core/models/user.model';
     .metric-sub {
       font-size: 0.75rem;
       color: var(--text-secondary);
+      line-height: 1.3;
+    }
+    .metric-link {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--secondary);
+      transition: all 0.2s ease;
     }
     .section-title {
       margin-bottom: 1.25rem;
+      padding: 0.5rem 0.75rem;
+      margin-left: -0.75rem;
+      border-radius: var(--radius-md);
+      transition: background-color 0.4s ease;
+    }
+    .section-title.section-highlight {
+      background-color: var(--primary-light);
     }
     .section-title p {
       color: var(--text-secondary);
@@ -295,6 +379,7 @@ export class DashboardComponent implements OnInit {
   turmas: TurmaResumo[] = [];
   loading: boolean = true;
   totalEstudantes: number = 0;
+  destaqueTurmas: boolean = false;
 
   constructor(private professorService: ProfessorService, private router: Router) {}
 
@@ -315,6 +400,39 @@ export class DashboardComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  rolarParaTurmas() {
+    const el = document.getElementById('secao-turmas');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    this.destaqueTurmas = true;
+    setTimeout(() => (this.destaqueTurmas = false), 1500);
+  }
+
+  abrirRelatorioGeral() {
+    if (this.turmas.length > 0) {
+      this.irParaRelatorios(this.turmas[0]);
+    } else {
+      this.router.navigate(['/professor/relatorios']);
+    }
+  }
+
+  abrirLancamentoNotas() {
+    if (this.turmas.length > 0) {
+      this.irParaNotas(this.turmas[0]);
+    } else {
+      this.router.navigate(['/professor/notas']);
+    }
+  }
+
+  abrirDiarioFrequencia() {
+    if (this.turmas.length > 0) {
+      this.irParaFrequencia(this.turmas[0]);
+    } else {
+      this.router.navigate(['/professor/frequencia']);
+    }
   }
 
   irParaNotas(turma: TurmaResumo) {
