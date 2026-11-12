@@ -253,9 +253,9 @@ import { TurmaResumo, NotaAluno } from '../../../core/models/user.model';
       color: var(--text-primary);
     }
     .btn-bimestre.active {
-      background: var(--primary);
+      background: var(--brand-gradient);
       color: #ffffff;
-      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+      box-shadow: 0 2px 8px rgba(8, 54, 96, 0.25);
     }
     .table-panel {
       padding: 0.5rem;

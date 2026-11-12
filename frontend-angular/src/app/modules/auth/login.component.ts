@@ -12,7 +12,9 @@ import { AuthService } from '../../core/services/auth.service';
     <div class="login-wrapper">
       <div class="login-card glass-panel">
         <div class="brand-header">
-          <div class="brand-logo">🎓</div>
+          <div class="brand-logo-wrap">
+            <img src="assets/logo-educa-mais.png" alt="Logo Educa+" class="brand-logo-img" />
+          </div>
           <h2>Educa+</h2>
           <p class="subtitle">Sistema Integrado de Gestão Escolar</p>
         </div>
@@ -104,16 +106,27 @@ import { AuthService } from '../../core/services/auth.service';
     }
     .brand-header {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.75rem;
     }
-    .brand-logo {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-      filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.4));
+    .brand-logo-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.65rem;
+    }
+    .brand-logo-img {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(8, 54, 96, 0.18));
+      transition: transform 0.25s ease;
+    }
+    .brand-logo-img:hover {
+      transform: scale(1.04);
     }
     .brand-header h2 {
-      font-size: 1.85rem;
-      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--brand-heading-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -125,7 +138,7 @@ import { AuthService } from '../../core/services/auth.service';
     .quick-profiles {
       margin-bottom: 1.75rem;
       padding: 1rem;
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
     }

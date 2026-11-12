@@ -10,9 +10,12 @@ import { AuthService } from '../../core/services/auth.service';
   template: `
     <div class="aluno-wrapper">
       <div class="page-header">
-        <div>
-          <h1>Portal do Estudante</h1>
-          <p class="subtitle">Bem-vindo(a), {{ auth.currentUser()?.nome }}! Acompanhe suas notas, frequência e histórico de auditoria.</p>
+        <div class="header-brand">
+          <img src="assets/logo-educa-mais.png" alt="Logo Educa+" class="header-logo" />
+          <div>
+            <h1>Educa+ — Portal do Estudante</h1>
+            <p class="subtitle">Bem-vindo(a), {{ auth.currentUser()?.nome }}! Acompanhe suas notas, frequência e histórico de auditoria.</p>
+          </div>
         </div>
         <button (click)="auth.logout()" class="btn btn-secondary btn-sm">
           <span>🚪</span> Sair
@@ -153,6 +156,16 @@ import { AuthService } from '../../core/services/auth.service';
       align-items: center;
       margin-bottom: 2rem;
     }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-logo {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+    }
     .subtitle { color: var(--text-secondary); margin-top: 0.25rem; }
     .tabs-nav {
       display: flex;
@@ -176,11 +189,11 @@ import { AuthService } from '../../core/services/auth.service';
       cursor: pointer;
       transition: all 0.2s;
     }
-    .tab-btn:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.04); }
+    .tab-btn:hover { color: var(--text-primary); background: var(--primary-light); }
     .tab-btn.active {
       color: #fff;
-      background: var(--primary);
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      background: var(--brand-gradient);
+      box-shadow: 0 4px 12px rgba(8, 54, 96, 0.22);
     }
     .boletim-card, .audit-panel {
       padding: 1.5rem;
@@ -218,7 +231,9 @@ import { AuthService } from '../../core/services/auth.service';
       display: block;
       margin-top: 0.35rem;
       padding: 0.35rem 0.5rem;
-      background: rgba(0, 0, 0, 0.3);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--primary);
       border-radius: 4px;
       font-family: var(--font-mono);
       font-size: 0.75rem;

@@ -8,15 +8,17 @@ export type DaltonismoMode = 'normal' | 'protanopia' | 'deuteranopia' | 'tritano
 export class AccessibilityService {
   currentDaltonismo = signal<DaltonismoMode>('normal');
   fontSizeLevel = signal<number>(0); // -1, 0, 1, 2
-  isLightMode = signal<boolean>(false);
+  isLightMode = signal<boolean>(true);
 
   constructor() {
     const savedFilter = localStorage.getItem('escola_daltonismo') as DaltonismoMode;
     if (savedFilter) {
       this.setDaltonismo(savedFilter);
     }
-    const savedTheme = localStorage.getItem('escola_theme');
-    if (savedTheme === 'light') {
+    const savedTheme = localStorage.getItem('educa_theme');
+    if (savedTheme === 'dark') {
+      this.toggleLightMode(false);
+    } else {
       this.toggleLightMode(true);
     }
   }
@@ -53,12 +55,14 @@ export class AccessibilityService {
   toggleLightMode(forceLight?: boolean) {
     const next = forceLight !== undefined ? forceLight : !this.isLightMode();
     this.isLightMode.set(next);
-    localStorage.setItem('escola_theme', next ? 'light' : 'dark');
+    localStorage.setItem('educa_theme', next ? 'light' : 'dark');
 
     if (next) {
+      document.body.classList.remove('dark-theme');
       document.body.classList.add('light-theme');
     } else {
       document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme');
     }
   }
 }

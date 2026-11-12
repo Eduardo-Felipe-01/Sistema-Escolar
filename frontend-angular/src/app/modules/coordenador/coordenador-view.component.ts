@@ -12,9 +12,12 @@ import { AuthService } from '../../core/services/auth.service';
   template: `
     <div class="coord-wrapper">
       <div class="page-header">
-        <div>
-          <h1>Painel da Coordenação Pedagógica</h1>
-          <p class="subtitle">Gestão escolar integral, validação de diários, cronograma e auditoria geral.</p>
+        <div class="header-brand">
+          <img src="assets/logo-educa-mais.png" alt="Logo Educa+" class="header-logo" />
+          <div>
+            <h1>Educa+ — Coordenação Pedagógica</h1>
+            <p class="subtitle">Gestão escolar integral, validação de diários, cronograma e auditoria geral.</p>
+          </div>
         </div>
         <div class="header-actions">
           <a routerLink="/professor/notas" class="btn btn-primary btn-sm">
@@ -327,6 +330,16 @@ import { AuthService } from '../../core/services/auth.service';
       flex-wrap: wrap;
       gap: 1rem;
     }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-logo {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+    }
     .header-actions {
       display: flex;
       gap: 0.75rem;
@@ -385,11 +398,11 @@ import { AuthService } from '../../core/services/auth.service';
       cursor: pointer;
       transition: all 0.2s;
     }
-    .tab-btn:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.04); }
+    .tab-btn:hover { color: var(--text-primary); background: var(--primary-light); }
     .tab-btn.active {
       color: #fff;
-      background: var(--primary);
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      background: var(--brand-gradient);
+      box-shadow: 0 4px 12px rgba(8, 54, 96, 0.22);
     }
     .panel-content {
       padding: 1.75rem;
@@ -477,8 +490,10 @@ import { AuthService } from '../../core/services/auth.service';
     code {
       font-family: var(--font-mono);
       font-size: 0.75rem;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.2rem 0.4rem;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--primary);
+      padding: 0.2rem 0.45rem;
       border-radius: 4px;
     }
   `]

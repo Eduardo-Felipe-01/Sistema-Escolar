@@ -51,9 +51,9 @@ import { TurmaResumo } from '../../../core/models/user.model';
         <!-- Institution Header -->
         <div class="doc-header">
           <div class="doc-brand">
-            <span class="doc-logo">🎓</span>
+            <img src="assets/logo-educa-mais.png" alt="Logo Educa+" class="doc-logo-img" />
             <div>
-              <h2>COLÉGIO INTEGRADO DE EDUCAÇÃO BÁSICA</h2>
+              <h2>EDUCA+ — COLÉGIO INTEGRADO DE EDUCAÇÃO BÁSICA</h2>
               <p>Relatório de Rendimento e Desempenho Escolar - Ano Letivo {{ relatorio.anoLetivo }}</p>
             </div>
           </div>
@@ -221,8 +221,10 @@ import { TurmaResumo } from '../../../core/models/user.model';
       align-items: center;
       gap: 1rem;
     }
-    .doc-logo {
-      font-size: 2.5rem;
+    .doc-logo-img {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
     }
     .doc-brand h2 {
       font-size: 1.35rem;
@@ -244,7 +246,7 @@ import { TurmaResumo } from '../../../core/models/user.model';
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--bg-surface-elevated);
       padding: 1rem 1.25rem;
       border-radius: var(--radius-md);
       border: 1px solid var(--border-subtle);
@@ -252,8 +254,8 @@ import { TurmaResumo } from '../../../core/models/user.model';
       font-size: 0.9rem;
     }
     .analytics-card {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.25);
+      background: linear-gradient(135deg, rgba(8, 54, 96, 0.06) 0%, rgba(18, 168, 107, 0.08) 100%);
+      border: 1px solid rgba(15, 157, 104, 0.3);
       border-radius: var(--radius-md);
       padding: 1.5rem;
       margin-bottom: 2rem;
@@ -274,7 +276,7 @@ import { TurmaResumo } from '../../../core/models/user.model';
       margin-bottom: 1.25rem;
     }
     .stat-box {
-      background: var(--bg-surface-elevated);
+      background: var(--bg-surface);
       padding: 0.75rem 1rem;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
@@ -291,7 +293,8 @@ import { TurmaResumo } from '../../../core/models/user.model';
     }
     .recomendacoes-box {
       font-size: 0.85rem;
-      background: rgba(0, 0, 0, 0.2);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       padding: 1rem;
       border-radius: var(--radius-sm);
     }

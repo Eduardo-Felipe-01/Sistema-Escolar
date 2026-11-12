@@ -12,7 +12,7 @@ import { AuthService } from '../../core/services/auth.service';
       <!-- Sidebar Navigation -->
       <aside class="sidebar glass-panel">
         <div class="sidebar-brand">
-          <span class="brand-icon">📚</span>
+          <img src="assets/logo-educa-mais.png" alt="Logo Educa+" class="brand-logo-sm" />
           <div class="brand-text">
             <h2>Educa+</h2>
             <span class="badge badge-info">Painel do Professor</span>
@@ -36,7 +36,7 @@ import { AuthService } from '../../core/services/auth.service';
             <span class="nav-icon">📑</span>
             <span>Emissão de Relatórios</span>
           </a>
-          <a *ngIf="auth.currentUser()?.role === 'ROLE_COORDENADOR'" routerLink="/coordenador" class="nav-item" style="margin-top: 0.75rem; border: 1px dashed rgba(99, 102, 241, 0.5);">
+          <a *ngIf="auth.currentUser()?.role === 'ROLE_COORDENADOR'" routerLink="/coordenador" class="nav-item" style="margin-top: 0.75rem; border: 1px dashed var(--secondary);">
             <span class="nav-icon">👔</span>
             <span>Painel da Coordenação</span>
           </a>
@@ -86,12 +86,19 @@ import { AuthService } from '../../core/services/auth.service';
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 1.5rem;
     }
-    .brand-icon {
-      font-size: 2rem;
+    .brand-logo-sm {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      flex-shrink: 0;
     }
     .brand-text h2 {
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       line-height: 1.2;
+      background: var(--brand-heading-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.15rem;
     }
     .sidebar-nav {
       display: flex;
@@ -114,15 +121,15 @@ import { AuthService } from '../../core/services/auth.service';
     }
     .nav-item:hover {
       color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--primary-light);
       transform: translateX(3px);
     }
     .nav-item.active {
       color: #ffffff;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(79, 70, 229, 0.4) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.4);
+      background: var(--brand-gradient);
+      border: 1px solid rgba(15, 157, 104, 0.35);
       font-weight: 600;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+      box-shadow: 0 4px 12px rgba(8, 54, 96, 0.22);
     }
     .nav-icon {
       font-size: 1.2rem;

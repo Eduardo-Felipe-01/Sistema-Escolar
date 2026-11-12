@@ -211,7 +211,7 @@ import { TurmaResumo } from '../../../core/models/user.model';
     .turma-card:hover {
       transform: translateY(-3px);
       box-shadow: var(--shadow-lg);
-      border-color: rgba(99, 102, 241, 0.4);
+      border-color: rgba(15, 157, 104, 0.45);
     }
     .turma-header {
       display: flex;
@@ -224,14 +224,14 @@ import { TurmaResumo } from '../../../core/models/user.model';
       margin-bottom: 0.25rem;
     }
     .turma-subject {
-      color: var(--primary);
+      color: var(--secondary);
       font-weight: 600;
       font-size: 0.9rem;
     }
     .turma-details {
       display: flex;
       justify-content: space-between;
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
       padding: 0.75rem 1rem;

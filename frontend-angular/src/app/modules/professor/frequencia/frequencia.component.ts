@@ -245,7 +245,7 @@ import { TurmaResumo, FrequenciaAluno } from '../../../core/models/user.model';
       transition: all 0.2s;
     }
     .btn-status:hover {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--primary-light);
       color: var(--text-primary);
     }
     .btn-presente.active {
