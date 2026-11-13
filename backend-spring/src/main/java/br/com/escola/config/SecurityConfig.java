@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**", "/api/public/**", "/error").permitAll()
                         .requestMatchers("/api/coordenador/**").hasRole("COORDENADOR")
                         .requestMatchers("/api/professor/**").hasAnyRole("PROFESSOR", "COORDENADOR")
-                        .requestMatchers("/api/aluno/**").hasAnyRole("ALUNO", "COORDENADOR", "PROFESSOR")
+                        .requestMatchers("/api/aluno/**").hasAnyRole("ALUNO", "COORDENADOR")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

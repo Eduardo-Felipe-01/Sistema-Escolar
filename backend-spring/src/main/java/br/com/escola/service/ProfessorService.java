@@ -44,6 +44,12 @@ public class ProfessorService {
         }
     }
 
+    private void validarRangeNota(Double nota, String campo) {
+        if (nota != null && (nota < 0.0 || nota > 10.0)) {
+            throw new IllegalArgumentException(campo + " deve estar entre 0.0 e 10.0. Valor recebido: " + nota);
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<TurmaResumoDTO> getTurmas(Long professorId) {
         User user = userRepository.findById(professorId)
@@ -58,7 +64,7 @@ public class ProfessorService {
 
         List<TurmaResumoDTO> resultado = new ArrayList<>();
         for (TurmaDisciplinaProfessor v : vinculos) {
-            int totalAlunos = matriculaRepository.findByTurmaIdOrderByNumeroChamadaAsc(v.getTurma().getId()).size();
+            int totalAlunos = (int) matriculaRepository.countByTurmaId(v.getTurma().getId());
             resultado.add(TurmaResumoDTO.builder()
                     .id(v.getTurma().getId())
                     .nome(v.getTurma().getNome())
@@ -77,9 +83,13 @@ public class ProfessorService {
     public List<LancamentoNotaResponse> getNotasTurma(Long turmaId, Long disciplinaId, Integer bimestre, Long professorId) {
         validarVinculo(professorId, turmaId, disciplinaId);
 
+        if (bimestre == null || bimestre < 1 || bimestre > 4) {
+            throw new IllegalArgumentException("Bimestre deve ser entre 1 e 4. Recebido: " + bimestre);
+        }
+
         List<Matricula> matriculas = matriculaRepository.findByTurmaIdOrderByNumeroChamadaAsc(turmaId);
         Disciplina disciplina = disciplinaRepository.findById(disciplinaId)
-                .orElseThrow(() -> new IllegalArgumentException("Disciplina não encontrada"));
+                .orElseThrow(() -> new IllegalArgumentException("Disciplina não encontrada: " + disciplinaId));
 
         List<LancamentoNotaResponse> resultado = new ArrayList<>();
 
@@ -132,6 +142,15 @@ public class ProfessorService {
 
     @Transactional("postgresTransactionManager")
     public LancamentoNotaResponse salvarNota(LancamentoNotaRequest req, Long professorId, String ipOrigem) {
+        if (req.getBimestre() == null || req.getBimestre() < 1 || req.getBimestre() > 4) {
+            throw new IllegalArgumentException("O bimestre deve ser um número inteiro entre 1 e 4.");
+        }
+
+        validarRangeNota(req.getNota1(), "Nota 1");
+        validarRangeNota(req.getNota2(), "Nota 2");
+        validarRangeNota(req.getTrabalho(), "Trabalho");
+        validarRangeNota(req.getRecuperacao(), "Recuperação");
+
         Matricula matricula = matriculaRepository.findById(req.getMatriculaId())
                 .orElseThrow(() -> new IllegalArgumentException("Matrícula não encontrada: " + req.getMatriculaId()));
 
@@ -179,6 +198,9 @@ public class ProfessorService {
 
         Nota salva = notaRepository.save(nota);
 
+        // Recalcular status da matrícula (Aprovação ou Reprovação Anual) se todos os bimestres forem preenchidos
+        recalcularStatusMatricula(matricula, disciplina.getId());
+
         String dadosNovos = String.format("{\"aluno\":\"%s\",\"disciplina\":\"%s\",\"bimestre\":%d,\"n1\":%s,\"n2\":%s,\"trab\":%s,\"rec\":%s,\"media\":%s,\"status\":\"%s\"}",
                 matricula.getAluno().getNome(), disciplina.getNome(), salva.getBimestre(),
                 salva.getNota1(), salva.getNota2(), salva.getTrabalho(), salva.getRecuperacao(), salva.getMediaBimestre(), salva.getStatus());
@@ -216,6 +238,43 @@ public class ProfessorService {
                 .build();
     }
 
+    /**
+     * Atualiza o status geral da matrícula com base nas notas anuais (caso os 4 bimestres estejam lançados).
+     * Reprovação por falta prevalece sobre notas.
+     */
+    @Transactional("postgresTransactionManager")
+    public void recalcularStatusMatricula(Matricula matricula, Long disciplinaId) {
+        if (matricula.getStatus() == StatusMatricula.REPROVADO_FALTA) {
+            return;
+        }
+
+        List<Nota> notas = notaRepository.findByMatriculaIdAndDisciplinaId(
+                matricula.getId(), disciplinaId);
+
+        if (notas.size() >= 4) {
+            double soma = notas.stream()
+                    .mapToDouble(n -> n.getMediaBimestre() != null ? n.getMediaBimestre() : 0.0)
+                    .sum();
+            double mediaAnual = Math.round((soma / 4.0) * 100.0) / 100.0;
+
+            StatusMatricula novoStatus;
+            if (mediaAnual >= CalculoMediaService.MEDIA_MINIMA_APROVACAO) {
+                novoStatus = StatusMatricula.APROVADO;
+            } else if (mediaAnual >= CalculoMediaService.MEDIA_MINIMA_RECUPERACAO) {
+                novoStatus = StatusMatricula.RECUPERACAO;
+            } else {
+                novoStatus = StatusMatricula.REPROVADO_NOTA;
+            }
+
+            if (matricula.getStatus() != novoStatus) {
+                matricula.setStatus(novoStatus);
+                matriculaRepository.save(matricula);
+                log.info("Status da matrícula do aluno {} atualizado para {}",
+                        matricula.getAluno().getNome(), novoStatus);
+            }
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<FrequenciaResumoAlunoDTO> getResumoFrequenciaTurma(Long turmaId, Long disciplinaId, Long professorId) {
         validarVinculo(professorId, turmaId, disciplinaId);
@@ -240,6 +299,10 @@ public class ProfessorService {
     public void salvarFrequencias(LancamentoFrequenciaBatchRequest req, Long professorId, String ipOrigem) {
         validarVinculo(professorId, req.getTurmaId(), req.getDisciplinaId());
 
+        if (req.getData() != null && req.getData().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Não é permitido registrar frequência com data futura: " + req.getData());
+        }
+
         User autor = userRepository.findById(professorId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
 
@@ -247,6 +310,8 @@ public class ProfessorService {
                 .orElseThrow(() -> new IllegalArgumentException("Disciplina não encontrada"));
 
         for (LancamentoFrequenciaItemDTO item : req.getItens()) {
+            frequenciaService.validarConsistencia(req.getAulasNoDia(), item.getPresencas(), item.getFaltas());
+
             Matricula matricula = matriculaRepository.findById(item.getMatriculaId())
                     .orElseThrow(() -> new IllegalArgumentException("Matrícula não encontrada: " + item.getMatriculaId()));
 
@@ -308,8 +373,8 @@ public class ProfessorService {
         List<Matricula> matriculas = matriculaRepository.findByTurmaIdOrderByNumeroChamadaAsc(turmaId);
         List<Map<String, Object>> alunosRelatorio = new ArrayList<>();
 
-        double somaMedias = 0.0;
-        int totalNotas = 0;
+        double somaMediasTurma = 0.0;
+        int totalAlunosComNota = 0;
         int aprovados = 0;
         int emRecuperacao = 0;
         int reprovados = 0;
@@ -321,14 +386,17 @@ public class ProfessorService {
             double mediaGeral = 0.0;
             if (!notasAluno.isEmpty()) {
                 double soma = notasAluno.stream().mapToDouble(n -> n.getMediaBimestre() != null ? n.getMediaBimestre() : 0.0).sum();
+                // Considera o total de bimestres avaliados (ou no mínimo 1)
                 mediaGeral = Math.round((soma / notasAluno.size()) * 100.0) / 100.0;
-                somaMedias += mediaGeral;
-                totalNotas++;
+                somaMediasTurma += mediaGeral;
+                totalAlunosComNota++;
             }
 
-            if (mediaGeral >= 6.0 && !freq.getReprovadoPorFalta()) {
+            if (freq.getReprovadoPorFalta()) {
+                reprovados++;
+            } else if (mediaGeral >= CalculoMediaService.MEDIA_MINIMA_APROVACAO) {
                 aprovados++;
-            } else if (mediaGeral >= 4.0 && !freq.getReprovadoPorFalta()) {
+            } else if (mediaGeral >= CalculoMediaService.MEDIA_MINIMA_RECUPERACAO) {
                 emRecuperacao++;
             } else {
                 reprovados++;
@@ -346,7 +414,7 @@ public class ProfessorService {
             alunosRelatorio.add(aMap);
         }
 
-        double mediaTurma = totalNotas > 0 ? Math.round((somaMedias / totalNotas) * 100.0) / 100.0 : 0.0;
+        double mediaTurma = totalAlunosComNota > 0 ? Math.round((somaMediasTurma / totalAlunosComNota) * 100.0) / 100.0 : 0.0;
 
         // Registrar emissão de relatório no MongoDB
         try {

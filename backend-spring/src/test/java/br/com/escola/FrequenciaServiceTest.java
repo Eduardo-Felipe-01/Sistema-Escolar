@@ -79,5 +79,27 @@ class FrequenciaServiceTest {
         assertEquals(80.0, resumo.getTaxaPresenca());
         assertFalse(resumo.getReprovadoPorFalta());
     }
-}
 
+    @Test
+    @DisplayName("Deve validar com sucesso quando presencas + faltas for igual a aulasNoDia")
+    void deveValidarConsistenciaComSucesso() {
+        assertDoesNotThrow(() -> service.validarConsistencia(2, 2, 0));
+        assertDoesNotThrow(() -> service.validarConsistencia(2, 1, 1));
+        assertDoesNotThrow(() -> service.validarConsistencia(1, 0, 1));
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção quando soma de presenças e faltas divergir de aulasNoDia")
+    void deveLancarExcecaoQuandoSomaDivergir() {
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> service.validarConsistencia(2, 2, 1));
+        assertTrue(ex.getMessage().contains("Inconsistência na frequência"));
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção quando presencas ou faltas forem negativas")
+    void deveLancarExcecaoQuandoValoresNegativos() {
+        assertThrows(IllegalArgumentException.class,
+                () -> service.validarConsistencia(1, -1, 2));
+    }
+}

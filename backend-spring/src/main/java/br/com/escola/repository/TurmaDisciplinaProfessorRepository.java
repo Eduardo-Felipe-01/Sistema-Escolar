@@ -13,4 +13,7 @@ public interface TurmaDisciplinaProfessorRepository extends JpaRepository<TurmaD
     List<TurmaDisciplinaProfessor> findByTurmaId(Long turmaId);
     Optional<TurmaDisciplinaProfessor> findByTurmaIdAndDisciplinaIdAndProfessorId(Long turmaId, Long disciplinaId, Long professorId);
     boolean existsByTurmaIdAndDisciplinaIdAndProfessorId(Long turmaId, Long disciplinaId, Long professorId);
+    boolean existsByProfessorId(Long professorId);
+    boolean existsByTurmaId(Long turmaId);
+    boolean existsByDisciplinaId(Long disciplinaId);
 }

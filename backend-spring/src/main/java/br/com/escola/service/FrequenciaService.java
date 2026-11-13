@@ -26,6 +26,26 @@ public class FrequenciaService {
     private final MatriculaRepository matriculaRepository;
 
     /**
+     * Valida a consistência de presenças, faltas e total de aulas no dia
+     */
+    public void validarConsistencia(Integer aulasNoDia, Integer presencas, Integer faltas) {
+        if (aulasNoDia == null || aulasNoDia < 1) {
+            throw new IllegalArgumentException("Número de aulas no dia deve ser no mínimo 1.");
+        }
+        int p = presencas != null ? presencas : 0;
+        int f = faltas != null ? faltas : 0;
+
+        if (p < 0 || f < 0) {
+            throw new IllegalArgumentException("Presenças e faltas não podem ter valores negativos.");
+        }
+        if (p + f != aulasNoDia) {
+            throw new IllegalArgumentException(String.format(
+                    "Inconsistência na frequência: a soma de presenças (%d) e faltas (%d) deve ser exatamente igual ao total de aulas no dia (%d).",
+                    p, f, aulasNoDia));
+        }
+    }
+
+    /**
      * Calcula o resumo de frequência de uma matrícula em determinada disciplina
      */
     public FrequenciaResumoAlunoDTO calcularResumo(Matricula matricula, Long disciplinaId) {

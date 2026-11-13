@@ -6,11 +6,14 @@ import br.com.escola.security.CustomUserDetails;
 import br.com.escola.service.ProfessorService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -21,6 +24,7 @@ import java.util.Map;
 @RequestMapping("/api/professor")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('PROFESSOR', 'COORDENADOR')")
+@Validated
 public class ProfessorController {
 
     private final ProfessorService professorService;
@@ -34,7 +38,7 @@ public class ProfessorController {
     public ResponseEntity<List<LancamentoNotaResponse>> getNotasTurma(
             @PathVariable Long turmaId,
             @PathVariable Long disciplinaId,
-            @PathVariable Integer bimestre,
+            @PathVariable @Min(1) @Max(4) Integer bimestre,
             @AuthenticationPrincipal CustomUserDetails user) {
         return ResponseEntity.ok(professorService.getNotasTurma(turmaId, disciplinaId, bimestre, user.getId()));
     }

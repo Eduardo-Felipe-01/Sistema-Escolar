@@ -5,60 +5,38 @@ import br.com.escola.domain.secondary.AuditLog;
 import br.com.escola.domain.secondary.ReportHistory;
 import br.com.escola.dto.LancamentoNotaRequest;
 import br.com.escola.dto.LancamentoNotaResponse;
-import br.com.escola.repository.*;
-import br.com.escola.repository.secondary.AuditLogRepository;
-import br.com.escola.repository.secondary.ReportHistoryRepository;
 import br.com.escola.security.CustomUserDetails;
-import br.com.escola.service.AuditService;
-import br.com.escola.service.ProfessorService;
+import br.com.escola.service.CoordenadorService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/coordenador")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('COORDENADOR')")
+@Validated
 public class CoordenadorController {
 
-    private final UserRepository userRepository;
-    private final TurmaRepository turmaRepository;
-    private final DisciplinaRepository disciplinaRepository;
-    private final CronogramaRepository cronogramaRepository;
-    private final AuditLogRepository auditLogRepository;
-    private final ReportHistoryRepository reportHistoryRepository;
-    private final ProfessorService professorService;
-    private final AuditService auditService;
-    private final PasswordEncoder passwordEncoder;
+    private final CoordenadorService coordenadorService;
 
     @GetMapping("/estatisticas-gerais")
     public ResponseEntity<?> getEstatisticas() {
-        long totalUsuarios = userRepository.count();
-        long totalTurmas = turmaRepository.count();
-        long totalDisciplinas = disciplinaRepository.count();
-        List<User> professores = userRepository.findByRole(Role.ROLE_PROFESSOR);
-        List<User> alunos = userRepository.findByRole(Role.ROLE_ALUNO);
-
-        return ResponseEntity.ok(Map.of(
-                "totalUsuarios", totalUsuarios,
-                "totalTurmas", totalTurmas,
-                "totalDisciplinas", totalDisciplinas,
-                "totalProfessores", professores.size(),
-                "totalAlunos", alunos.size()
-        ));
+        return ResponseEntity.ok(coordenadorService.getEstatisticas());
     }
 
+    // --- USUÁRIOS ---
     @GetMapping("/usuarios")
     public ResponseEntity<List<User>> listarUsuarios() {
-        return ResponseEntity.ok(userRepository.findAll());
+        return ResponseEntity.ok(coordenadorService.listarUsuarios());
     }
 
     @PostMapping("/usuarios")
@@ -66,27 +44,8 @@ public class CoordenadorController {
             @RequestBody User user,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             HttpServletRequest httpRequest) {
-        user.setSenha(passwordEncoder.encode(user.getSenha() != null && !user.getSenha().isBlank() ? user.getSenha() : "senha123"));
-        user.setAtivo(true);
-        if (user.getRole() == null) {
-            user.setRole(Role.ROLE_ALUNO);
-        }
-        User salvo = userRepository.save(user);
-
-        auditService.registrar(
-                currentUser.getId(),
-                currentUser.getNome(),
-                Role.ROLE_COORDENADOR.name(),
-                salvo.getRole() == Role.ROLE_ALUNO ? salvo.getId() : null,
-                "CRIACAO_USUARIO",
-                "Usuario",
-                salvo.getId(),
-                "{}",
-                String.format("{\"nome\":\"%s\",\"email\":\"%s\",\"role\":\"%s\"}", salvo.getNome(), salvo.getEmail(), salvo.getRole()),
-                httpRequest.getRemoteAddr()
-        );
-
-        return ResponseEntity.ok(salvo);
+        return ResponseEntity.ok(coordenadorService.criarUsuario(
+                user, currentUser.getId(), currentUser.getNome(), httpRequest.getRemoteAddr()));
     }
 
     @PutMapping("/usuarios/{id}")
@@ -95,43 +54,8 @@ public class CoordenadorController {
             @RequestBody Map<String, String> payload,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             HttpServletRequest httpRequest) {
-        User existente = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado: " + id));
-
-        String dadosAnteriores = String.format("{\"nome\":\"%s\",\"role\":\"%s\"}", existente.getNome(), existente.getRole());
-
-        if (payload.containsKey("nome") && payload.get("nome") != null && !payload.get("nome").isBlank()) {
-            existente.setNome(payload.get("nome"));
-        }
-        if (payload.containsKey("email") && payload.get("email") != null && !payload.get("email").isBlank()) {
-            existente.setEmail(payload.get("email"));
-        }
-        if (payload.containsKey("role") && payload.get("role") != null) {
-            existente.setRole(Role.valueOf(payload.get("role")));
-        }
-        if (payload.containsKey("matricula")) {
-            existente.setMatricula(payload.get("matricula"));
-        }
-        if (payload.containsKey("telefone")) {
-            existente.setTelefone(payload.get("telefone"));
-        }
-
-        User salvo = userRepository.save(existente);
-
-        auditService.registrar(
-                currentUser.getId(),
-                currentUser.getNome(),
-                Role.ROLE_COORDENADOR.name(),
-                salvo.getRole() == Role.ROLE_ALUNO ? salvo.getId() : null,
-                "ALTERACAO_PERFIL_USUARIO",
-                "Usuario",
-                salvo.getId(),
-                dadosAnteriores,
-                String.format("{\"nome\":\"%s\",\"role\":\"%s\"}", salvo.getNome(), salvo.getRole()),
-                httpRequest.getRemoteAddr()
-        );
-
-        return ResponseEntity.ok(salvo);
+        return ResponseEntity.ok(coordenadorService.atualizarUsuario(
+                id, payload, currentUser.getId(), currentUser.getNome(), httpRequest.getRemoteAddr()));
     }
 
     @DeleteMapping("/usuarios/{id}")
@@ -139,26 +63,14 @@ public class CoordenadorController {
             @PathVariable Long id,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             HttpServletRequest httpRequest) {
-        userRepository.findById(id).ifPresent(u -> {
-            userRepository.deleteById(id);
-            auditService.registrar(
-                    currentUser.getId(),
-                    currentUser.getNome(),
-                    Role.ROLE_COORDENADOR.name(),
-                    "EXCLUSAO_USUARIO",
-                    "Usuario",
-                    id,
-                    String.format("{\"nome\":\"%s\",\"email\":\"%s\",\"role\":\"%s\"}", u.getNome(), u.getEmail(), u.getRole()),
-                    "{}",
-                    httpRequest.getRemoteAddr()
-            );
-        });
+        coordenadorService.deletarUsuario(id, currentUser.getId(), currentUser.getNome(), httpRequest.getRemoteAddr());
         return ResponseEntity.noContent().build();
     }
 
+    // --- CRONOGRAMAS ---
     @GetMapping("/cronograma")
     public ResponseEntity<List<Cronograma>> listarCronograma() {
-        return ResponseEntity.ok(cronogramaRepository.findAll());
+        return ResponseEntity.ok(coordenadorService.listarCronograma());
     }
 
     @PostMapping("/cronograma")
@@ -166,41 +78,110 @@ public class CoordenadorController {
             @RequestBody Cronograma cronograma,
             @AuthenticationPrincipal CustomUserDetails currentUser,
             HttpServletRequest httpRequest) {
-        Cronograma salvo = cronogramaRepository.save(cronograma);
-        auditService.registrar(
-                currentUser.getId(),
-                currentUser.getNome(),
-                Role.ROLE_COORDENADOR.name(),
-                "CRIACAO_CRONOGRAMA",
-                "Cronograma",
-                salvo.getId(),
-                "{}",
-                String.format("{\"titulo\":\"%s\",\"tipo\":\"%s\",\"inicio\":\"%s\",\"fim\":\"%s\"}",
-                        salvo.getTitulo(), salvo.getTipo(), salvo.getDataInicio(), salvo.getDataFim()),
-                httpRequest.getRemoteAddr()
-        );
-        return ResponseEntity.ok(salvo);
+        return ResponseEntity.ok(coordenadorService.criarCronograma(
+                cronograma, currentUser.getId(), currentUser.getNome(), httpRequest.getRemoteAddr()));
     }
 
     @DeleteMapping("/cronograma/{id}")
     public ResponseEntity<Void> deletarCronograma(@PathVariable Long id) {
-        cronogramaRepository.deleteById(id);
+        coordenadorService.deletarCronograma(id);
         return ResponseEntity.noContent().build();
     }
 
+    // --- TURMAS ---
+    @GetMapping("/turmas")
+    public ResponseEntity<List<Turma>> listarTurmas() {
+        return ResponseEntity.ok(coordenadorService.listarTurmas());
+    }
+
+    @PostMapping("/turmas")
+    public ResponseEntity<Turma> criarTurma(@RequestBody Turma turma) {
+        return ResponseEntity.ok(coordenadorService.criarTurma(turma));
+    }
+
+    @PutMapping("/turmas/{id}")
+    public ResponseEntity<Turma> atualizarTurma(@PathVariable Long id, @RequestBody Turma turma) {
+        return ResponseEntity.ok(coordenadorService.atualizarTurma(id, turma));
+    }
+
+    @DeleteMapping("/turmas/{id}")
+    public ResponseEntity<Void> deletarTurma(@PathVariable Long id) {
+        coordenadorService.deletarTurma(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // --- DISCIPLINAS ---
+    @GetMapping("/disciplinas")
+    public ResponseEntity<List<Disciplina>> listarDisciplinas() {
+        return ResponseEntity.ok(coordenadorService.listarDisciplinas());
+    }
+
+    @PostMapping("/disciplinas")
+    public ResponseEntity<Disciplina> criarDisciplina(@RequestBody Disciplina disciplina) {
+        return ResponseEntity.ok(coordenadorService.criarDisciplina(disciplina));
+    }
+
+    @PutMapping("/disciplinas/{id}")
+    public ResponseEntity<Disciplina> atualizarDisciplina(@PathVariable Long id, @RequestBody Disciplina disciplina) {
+        return ResponseEntity.ok(coordenadorService.atualizarDisciplina(id, disciplina));
+    }
+
+    @DeleteMapping("/disciplinas/{id}")
+    public ResponseEntity<Void> deletarDisciplina(@PathVariable Long id) {
+        coordenadorService.deletarDisciplina(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // --- MATRÍCULAS ---
+    @PostMapping("/turmas/{turmaId}/matricular/{alunoId}")
+    public ResponseEntity<Matricula> matricularAluno(
+            @PathVariable Long turmaId,
+            @PathVariable Long alunoId,
+            @RequestParam(required = false) Integer numeroChamada) {
+        return ResponseEntity.ok(coordenadorService.matricularAluno(turmaId, alunoId, numeroChamada));
+    }
+
+    @DeleteMapping("/matriculas/{matriculaId}")
+    public ResponseEntity<Void> desmatricularAluno(@PathVariable Long matriculaId) {
+        coordenadorService.desmatricularAluno(matriculaId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // --- VÍNCULOS ---
+    @GetMapping("/vinculos")
+    public ResponseEntity<List<TurmaDisciplinaProfessor>> listarVinculos() {
+        return ResponseEntity.ok(coordenadorService.listarVinculos());
+    }
+
+    @PostMapping("/vinculos")
+    public ResponseEntity<TurmaDisciplinaProfessor> vincularProfessor(
+            @RequestParam Long turmaId,
+            @RequestParam Long disciplinaId,
+            @RequestParam Long professorId) {
+        return ResponseEntity.ok(coordenadorService.vincularProfessor(turmaId, disciplinaId, professorId));
+    }
+
+    @DeleteMapping("/vinculos/{id}")
+    public ResponseEntity<Void> desvincularProfessor(@PathVariable Long id) {
+        coordenadorService.desvincularProfessor(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // --- NOTAS ---
     @PutMapping("/notas/{notaId}")
     public ResponseEntity<LancamentoNotaResponse> alterarNotaComoCoordenador(
             @PathVariable Long notaId,
             @Valid @RequestBody LancamentoNotaRequest request,
             @AuthenticationPrincipal CustomUserDetails user,
             HttpServletRequest httpRequest) {
-        // Coordenador alterando notas com registro de auditoria
-        return ResponseEntity.ok(professorService.salvarNota(request, user.getId(), httpRequest.getRemoteAddr()));
+        return ResponseEntity.ok(coordenadorService.alterarNotaComoCoordenador(
+                notaId, request, user.getId(), httpRequest.getRemoteAddr()));
     }
 
+    // --- RELATÓRIOS E AUDITORIA ---
     @GetMapping("/relatorios")
     public ResponseEntity<List<ReportHistory>> listarRelatorios() {
-        return ResponseEntity.ok(reportHistoryRepository.findTop50ByOrderByDataEmissaoDesc());
+        return ResponseEntity.ok(coordenadorService.listarRelatorios());
     }
 
     @PostMapping("/validar-relatorio/{reportId}")
@@ -208,34 +189,12 @@ public class CoordenadorController {
             @PathVariable String reportId,
             @AuthenticationPrincipal CustomUserDetails user,
             HttpServletRequest httpRequest) {
-        ReportHistory rep = reportHistoryRepository.findById(reportId)
-                .orElseThrow(() -> new IllegalArgumentException("Relatório não encontrado: " + reportId));
-        rep.setStatusValidacao("VALIDADO_COORDENADOR");
-        rep.setValidadoPor(user.getNome());
-        rep.setDataValidacao(LocalDateTime.now());
-        ReportHistory salvo = reportHistoryRepository.save(rep);
-
-        auditService.registrar(
-                user.getId(),
-                user.getNome(),
-                Role.ROLE_COORDENADOR.name(),
-                rep.getAlunoId(),
-                "VALIDACAO_COORDENADOR",
-                "Relatorio",
-                rep.getTurmaId() != null ? rep.getTurmaId() : 1L,
-                "{\"status\":\"PENDENTE\"}",
-                String.format("{\"tipo\":\"%s\",\"turma\":\"%s\",\"disciplina\":\"%s\",\"status\":\"VALIDADO_COORDENADOR\"}",
-                        rep.getTipoRelatorio(),
-                        rep.getTurmaNome() != null ? rep.getTurmaNome() : "-",
-                        rep.getDisciplinaNome() != null ? rep.getDisciplinaNome() : "-"),
-                httpRequest.getRemoteAddr()
-        );
-
-        return ResponseEntity.ok(salvo);
+        User coordUser = User.builder().id(user.getId()).nome(user.getNome()).build();
+        return ResponseEntity.ok(coordenadorService.validarRelatorio(reportId, coordUser, httpRequest.getRemoteAddr()));
     }
 
     @GetMapping("/auditoria")
     public ResponseEntity<List<AuditLog>> listarAuditoria() {
-        return ResponseEntity.ok(auditLogRepository.findTop50ByOrderByDataHoraDesc());
+        return ResponseEntity.ok(coordenadorService.listarAuditoria());
     }
 }
