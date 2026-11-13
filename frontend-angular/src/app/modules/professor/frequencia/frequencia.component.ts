@@ -27,9 +27,17 @@ import { TurmaResumo, FrequenciaAluno } from '../../../core/models/user.model';
         </div>
       </div>
 
-      <!-- Notification Banner -->
+      <!-- Notification Banners -->
       <div *ngIf="mensagemSucesso" class="alert-banner success-banner">
-        <i class="fa-solid fa-circle-check"></i> {{ mensagemSucesso }}
+        <i class="fa-solid fa-circle-check"></i>
+        <span>{{ mensagemSucesso }}</span>
+        <button type="button" class="btn-close-banner" (click)="mensagemSucesso = ''">&times;</button>
+      </div>
+
+      <div *ngIf="mensagemErro" class="alert-banner error-banner">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>{{ mensagemErro }}</span>
+        <button type="button" class="btn-close-banner" (click)="mensagemErro = ''">&times;</button>
       </div>
 
       <!-- Filters Bar -->
@@ -181,6 +189,24 @@ import { TurmaResumo, FrequenciaAluno } from '../../../core/models/user.model';
       border: 1px solid rgba(16, 185, 129, 0.4);
       color: var(--success);
     }
+    .error-banner {
+      background: var(--danger-bg);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: var(--danger);
+    }
+    .btn-close-banner {
+      background: transparent;
+      border: none;
+      color: inherit;
+      font-size: 1.35rem;
+      line-height: 1;
+      cursor: pointer;
+      opacity: 0.7;
+      margin-left: auto;
+    }
+    .btn-close-banner:hover {
+      opacity: 1;
+    }
     .filters-bar {
       padding: 1.25rem 1.5rem;
       display: flex;
@@ -302,6 +328,7 @@ export class FrequenciaComponent implements OnInit {
   loading: boolean = true;
   salvando: boolean = false;
   mensagemSucesso: string = '';
+  mensagemErro: string = '';
 
   constructor(
     private professorService: ProfessorService,
@@ -376,6 +403,7 @@ export class FrequenciaComponent implements OnInit {
   }
 
   salvarChamada() {
+    this.mensagemErro = '';
     this.salvando = true;
     const itens = this.alunos.map(a => ({
       matriculaId: a.matriculaId,
@@ -401,7 +429,8 @@ export class FrequenciaComponent implements OnInit {
       },
       error: (err) => {
         this.salvando = false;
-        alert('Erro ao salvar frequência: ' + (err.error?.message || 'Falha de conexão'));
+        const msg = err.error?.mensagem || err.error?.erro || err.error?.message || 'Falha de comunicação com o servidor ao salvar frequência.';
+        this.mensagemErro = msg;
       }
     });
   }
