@@ -5,12 +5,12 @@
 ## 1. Mapa Consolidado de Links
 
 ### Aplicação Hospedada
-- **Frontend Web (Vercel Production):** https://frontend-angular-zeta.vercel.app
-- **Login Direto:** https://frontend-angular-zeta.vercel.app/login
+- **Frontend Web (Vercel Production):** https://educamaisnassau.vercel.app
+- **Login Direto:** https://educamaisnassau.vercel.app/login
 - **Backend Spring Boot (Railway):** https://backend-spring-production-5401a3f1.up.railway.app
 - **Python Analytics (Railway):** https://python-analytics-production-0b901680.up.railway.app
 - **Healthcheck Python Direto:** https://python-analytics-production-0b901680.up.railway.app/health
-- **Healthcheck Python via Proxy Vercel:** https://frontend-angular-zeta.vercel.app/py-analytics/health
+- **Healthcheck Python via Proxy Vercel:** https://educamaisnassau.vercel.app/py-analytics/health
 
 ### Controle de Versão (GitHub)
 - **Repositório Principal:** https://github.com/Eduardo-Felipe-01/Sistema-Escolar
@@ -27,7 +27,7 @@
 
 ## 2. Verificação Ponta a Ponta Executada em Produção
 
-Após a publicação simultânea nos dois provedores, o sistema foi validado em navegador real sobre `https://frontend-angular-zeta.vercel.app`:
+Após a publicação simultânea nos dois provedores, o sistema foi validado em navegador real sobre `https://educamaisnassau.vercel.app`:
 
 1. **Inicialização de Bancos e Carga Inicial (`backend-spring`):**
    - `HikariPool-1` conectado ao PostgreSQL (`postgres.railway.internal:5432`).

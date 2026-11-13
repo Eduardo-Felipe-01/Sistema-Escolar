@@ -9,10 +9,10 @@
 
 | Serviço / Recurso | Plataforma | Link Direto |
 |---|---|---|
-| **Sistema Web (Frontend Angular 19)** | **Vercel** | https://frontend-angular-zeta.vercel.app |
+| **Sistema Web (Frontend Angular 19)** | **Vercel** | https://educamaisnassau.vercel.app |
 | **API Central (Java 17 / Spring Boot 3)** | **Railway** | https://backend-spring-production-5401a3f1.up.railway.app |
 | **Microsserviço Analytics (Python / FastAPI)** | **Railway** | https://python-analytics-production-0b901680.up.railway.app |
-| **Healthcheck Analytics (via Proxy Vercel)** | **Vercel → Railway** | https://frontend-angular-zeta.vercel.app/py-analytics/health |
+| **Healthcheck Analytics (via Proxy Vercel)** | **Vercel → Railway** | https://educamaisnassau.vercel.app/py-analytics/health |
 | **Repositório Oficial (`develop`)** | **GitHub** | https://github.com/Eduardo-Felipe-01/Sistema-Escolar/tree/develop |
 | **Branch desta Documentação (`Docs-Alexsander`)** | **GitHub** | https://github.com/Eduardo-Felipe-01/Sistema-Escolar/tree/Docs-Alexsander |
 

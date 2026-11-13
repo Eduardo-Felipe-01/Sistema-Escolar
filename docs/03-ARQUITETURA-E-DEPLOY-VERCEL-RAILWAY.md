@@ -43,7 +43,7 @@ Como a **Vercel** não executa containers Java 17/Spring Boot persistentes e fun
 ```
 
 ### Vantagens dessa arquitetura
-- **Zero erros de CORS e Mixed Content:** o navegador sempre faz requisições HTTPS para o mesmo domínio (`https://frontend-angular-zeta.vercel.app`), enquanto os rewrites da Vercel encaminham no lado servidor para os serviços no Railway.
+- **Zero erros de CORS e Mixed Content:** o navegador sempre faz requisições HTTPS para o mesmo domínio (`https://educamaisnassau.vercel.app`), enquanto os rewrites da Vercel encaminham no lado servidor para os serviços no Railway.
 - **Tráfego privado entre backend Java e serviço Python + bancos:** no Railway, `backend-spring` comunica-se com `Postgres`, `MongoDB` e `python-analytics` diretamente pela rede privada (`*.railway.internal`), reduzindo latência e sem expor portas de banco à internet.
 - **Desenvolvimento local preservado:** o `docker-compose.yml` local continua funcionando exatamente igual em `http://localhost:4200`.
 
