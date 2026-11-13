@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProfessorService } from '../../../core/services/professor.service';
 import { AnalyticsService } from '../../../core/services/analytics.service';
+import { PdfPrintService } from '../../../core/services/pdf-print.service';
 import { TurmaResumo } from '../../../core/models/user.model';
 
 @Component({
@@ -47,34 +48,49 @@ import { TurmaResumo } from '../../../core/models/user.model';
       </div>
 
       <!-- Report Sheet Document (Printable) -->
-      <div *ngIf="!loading && relatorio" class="glass-panel print-document">
+      <div *ngIf="!loading && relatorio" id="relatorio-docente-sheet" class="glass-panel print-document">
         <!-- Institution Header -->
         <div class="doc-header">
           <div class="doc-brand">
             <img src="assets/logo-educa-mais.png" alt="Logo Educa+" class="doc-logo-img" />
             <div>
+              <span class="doc-inst-tag">DOCUMENTO OFICIAL DE ESCRITURAÇÃO ESCOLAR • LDB LEI Nº 9.394/96</span>
               <h2>EDUCA+ — COLÉGIO INTEGRADO DE EDUCAÇÃO BÁSICA</h2>
-              <p>Relatório de Rendimento e Desempenho Escolar - Ano Letivo {{ relatorio.anoLetivo }}</p>
+              <p>Ata e Relatório Consolidado de Rendimento e Assiduidade Escolar — Ano Letivo {{ relatorio.anoLetivo }}</p>
             </div>
           </div>
           <div class="doc-meta">
-            <span><strong>Emissão:</strong> {{ relatorio.emitidoEm | date:'dd/MM/yyyy HH:mm' }}</span>
-            <span><strong>Docente:</strong> {{ relatorio.professorNome }}</span>
+            <div><strong>Emissão:</strong> {{ relatorio.emitidoEm | date:'dd/MM/yyyy HH:mm' }}</div>
+            <div><strong>Docente:</strong> {{ relatorio.professorNome }}</div>
+            <div><strong> Ano Letivo:</strong> {{ relatorio.anoLetivo }}</div>
           </div>
         </div>
 
+        <!-- Structured Class Info Grid -->
         <div class="doc-subinfo">
-          <div><strong>Turma:</strong> {{ relatorio.turmaNome }}</div>
-          <div><strong>Disciplina:</strong> {{ relatorio.disciplinaNome }}</div>
-          <div><strong>Total de Estudantes:</strong> {{ relatorio.totalAlunos }}</div>
-          <div><strong>Média Geral da Turma:</strong> <span class="badge badge-info">{{ relatorio.mediaGeralTurma }}</span></div>
+          <div class="subinfo-cell">
+            <small>Turma / Série</small>
+            <strong>{{ relatorio.turmaNome }}</strong>
+          </div>
+          <div class="subinfo-cell">
+            <small>Componente Curricular</small>
+            <strong>{{ relatorio.disciplinaNome }}</strong>
+          </div>
+          <div class="subinfo-cell">
+            <small>Estudantes Matriculados</small>
+            <strong>{{ relatorio.totalAlunos }} alunos</strong>
+          </div>
+          <div class="subinfo-cell">
+            <small>Média Geral da Turma</small>
+            <strong class="text-primary-val">{{ relatorio.mediaGeralTurma }}</strong>
+          </div>
         </div>
 
-        <!-- Python Analytics Section -->
-        <div *ngIf="analisePython" class="analytics-card no-print">
+        <!-- Python Analytics Section (Visible on Screen & Print) -->
+        <div *ngIf="analisePython" class="analytics-card">
           <div class="analytics-title">
-            <i class="fa-brands fa-python" style="color: var(--primary); font-size: 1.25rem;"></i>
-            <h3>Insights do Microserviço Python de Análise de Dados</h3>
+            <i class="fa-brands fa-python no-print" style="color: var(--primary); font-size: 1.25rem;"></i>
+            <h3>Indicadores Estatísticos e Diagnóstico Pedagógico da Turma</h3>
           </div>
 
           <div class="stats-grid">
@@ -98,7 +114,7 @@ import { TurmaResumo } from '../../../core/models/user.model';
 
           <!-- Pedagogical Recommendations from Python -->
           <div class="recomendacoes-box">
-            <strong>Recomendações Pedagógicas Automatizadas:</strong>
+            <strong>Parecer e Recomendações Pedagógicas Automatizadas:</strong>
             <ul>
               <li *ngFor="let rec of analisePython.recomendacoes">• {{ rec }}</li>
             </ul>
@@ -106,21 +122,24 @@ import { TurmaResumo } from '../../../core/models/user.model';
         </div>
 
         <!-- Student Performance Table -->
+        <div class="doc-section-title">
+          <h4>Relação Nominal de Estudantes e Situação Final</h4>
+        </div>
         <div class="table-responsive">
           <table class="custom-table doc-table">
             <thead>
               <tr>
-                <th style="width: 50px;">Nº</th>
-                <th>Nome do Estudante</th>
-                <th style="text-align: center;">Média Acumulada</th>
-                <th style="text-align: center;">Taxa de Presença</th>
-                <th style="text-align: center;">Situação Final</th>
+                <th style="width: 55px; text-align: center;">Nº</th>
+                <th style="min-width: 210px;">Nome do Estudante</th>
+                <th style="width: 140px; text-align: center;">Média Acumulada</th>
+                <th style="width: 140px; text-align: center;">Taxa de Presença</th>
+                <th style="width: 170px; text-align: center;">Situação Final</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let aluno of relatorio.alunos">
-                <td>{{ aluno.numeroChamada }}</td>
-                <td><strong>{{ aluno.nome }}</strong></td>
+                <td style="text-align: center; font-weight: 600;">{{ aluno.numeroChamada }}</td>
+                <td class="student-name-cell"><strong>{{ aluno.nome }}</strong></td>
                 <td style="text-align: center;">
                   <strong [ngClass]="aluno.mediaGeral >= 6.0 ? 'text-success' : 'text-danger'">
                     {{ aluno.mediaGeral }}
@@ -150,18 +169,22 @@ import { TurmaResumo } from '../../../core/models/user.model';
           </table>
         </div>
 
-        <!-- Signatures (for print) -->
+        <!-- Signatures (for print & official view) -->
         <div class="signatures-area">
           <div class="sign-box">
             <div class="sign-line"></div>
             <span>{{ relatorio.professorNome }}</span>
-            <small>Professor(a) Responsável</small>
+            <small>Professor(a) Responsável pela Disciplina</small>
           </div>
           <div class="sign-box">
             <div class="sign-line"></div>
             <span>Coordenação Pedagógica</span>
-            <small>Visto e Homologação</small>
+            <small>Visto e Homologação Institucional</small>
           </div>
+        </div>
+
+        <div class="doc-footer-note">
+          <span>Documento gerado eletronicamente pelo Sistema Integrado de Gestão Escolar <strong>Educa+</strong> • Registro auditado em banco secundário MongoDB.</span>
         </div>
       </div>
     </div>
@@ -212,9 +235,11 @@ import { TurmaResumo } from '../../../core/models/user.model';
     .doc-header {
       display: flex;
       justify-content: space-between;
-      border-bottom: 2px solid var(--border-subtle);
-      padding-bottom: 1.5rem;
-      margin-bottom: 1.5rem;
+      align-items: center;
+      gap: 1.5rem;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
     }
     .doc-brand {
       display: flex;
@@ -222,36 +247,144 @@ import { TurmaResumo } from '../../../core/models/user.model';
       gap: 1rem;
     }
     .doc-logo-img {
-      width: 56px;
-      height: 56px;
+      width: 60px;
+      height: 60px;
       object-fit: contain;
+      flex-shrink: 0;
+    }
+    .doc-inst-tag {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--secondary);
+      text-transform: uppercase;
+      margin-bottom: 0.15rem;
     }
     .doc-brand h2 {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       letter-spacing: -0.01em;
+      line-height: 1.2;
     }
     .doc-brand p {
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       color: var(--text-secondary);
+      margin-top: 0.2rem;
     }
     .doc-meta {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 0.25rem;
-      font-size: 0.85rem;
+      gap: 0.2rem;
+      font-size: 0.8rem;
       color: var(--text-secondary);
+      background: var(--bg-surface-elevated);
+      padding: 0.65rem 0.9rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .doc-subinfo {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .subinfo-cell {
       background: var(--bg-surface-elevated);
-      padding: 1rem 1.25rem;
-      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
-      margin-bottom: 2rem;
-      font-size: 0.9rem;
+    }
+    .subinfo-cell small {
+      display: block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+    .subinfo-cell strong {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+    .text-primary-val {
+      color: var(--primary) !important;
+      font-family: var(--font-mono);
+      font-size: 1.05rem !important;
+    }
+    .doc-section-title {
+      margin-bottom: 0.75rem;
+    }
+    .doc-section-title h4 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--primary);
+    }
+    .student-name-cell {
+      white-space: nowrap;
+    }
+    .doc-footer-note {
+      margin-top: 1.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--border-subtle);
+      text-align: center;
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+    @media print {
+      .print-document {
+        padding: 0 !important;
+        border: none !important;
+        background: #ffffff !important;
+      }
+      .doc-header {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 0.85rem !important;
+        padding-bottom: 0.85rem !important;
+        margin-bottom: 0.9rem !important;
+      }
+      .doc-brand { min-width: 0 !important; flex: 1 !important; }
+      .doc-brand h2 { font-size: 1rem !important; color: #083b66 !important; }
+      .doc-brand p { font-size: 0.76rem !important; }
+      .doc-logo-img { width: 48px !important; height: 48px !important; }
+      .doc-meta {
+        font-size: 0.72rem !important;
+        padding: 0.45rem 0.7rem !important;
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        color: #334155 !important;
+      }
+      .doc-subinfo, .stats-grid {
+        gap: 0.5rem !important;
+        margin-bottom: 1rem !important;
+      }
+      .subinfo-cell, .stat-box, .recomendacoes-box {
+        background: #f8fafc !important;
+        border-color: #cbd5e1 !important;
+        padding: 0.55rem 0.75rem !important;
+      }
+      .analytics-card {
+        padding: 0.85rem !important;
+        margin-bottom: 1rem !important;
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+      .signatures-area {
+        margin-top: 2rem !important;
+        padding-top: 0.85rem !important;
+      }
+      .sign-line {
+        height: 0 !important;
+        background: transparent !important;
+        border-top: 1.5px solid #334155 !important;
+      }
     }
     .analytics-card {
       background: linear-gradient(135deg, rgba(8, 54, 96, 0.06) 0%, rgba(18, 168, 107, 0.08) 100%);
@@ -361,7 +494,8 @@ export class RelatoriosComponent implements OnInit {
   constructor(
     private professorService: ProfessorService,
     private analyticsService: AnalyticsService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private pdfPrint: PdfPrintService
   ) {}
 
   ngOnInit() {
@@ -422,6 +556,9 @@ export class RelatoriosComponent implements OnInit {
   }
 
   imprimir() {
-    window.print();
+    const docEl = document.getElementById('relatorio-docente-sheet');
+    const turma = this.relatorio?.turmaNome || 'Turma';
+    const disc = this.relatorio?.disciplinaNome || 'Disciplina';
+    this.pdfPrint.printDocument(`Educa+ - Relatorio Consolidado - ${turma} - ${disc}`, docEl);
   }
 }

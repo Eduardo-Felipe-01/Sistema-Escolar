@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
+import { PdfPrintService } from '../../core/services/pdf-print.service';
 
 @Component({
   selector: 'app-aluno-view',
@@ -132,8 +133,25 @@ import { AuthService } from '../../core/services/auth.service';
           Nenhuma matrícula ou boletim disponível no momento.
         </div>
 
-        <div *ngFor="let turma of boletins" class="glass-panel panel-content boletim-card">
-          <div class="section-flex">
+        <div *ngFor="let turma of boletins; let i = index" #boletimCard class="glass-panel panel-content boletim-card print-document">
+          <!-- Cabeçalho Institucional Exclusivo para Impressão / PDF do Boletim -->
+          <div class="doc-header print-only-block">
+            <div class="doc-brand">
+              <img src="assets/logo-educa-mais.png" alt="Logo Educa+" class="doc-logo-img" />
+              <div>
+                <span class="doc-inst-tag">DOCUMENTO OFICIAL DE ESCRITURAÇÃO ESCOLAR • LDB LEI Nº 9.394/96</span>
+                <h2>EDUCA+ — COLÉGIO INTEGRADO DE EDUCAÇÃO BÁSICA</h2>
+                <p>Boletim Escolar Oficial de Rendimento e Frequência — Ano Letivo {{ turma.anoLetivo || 2026 }}</p>
+              </div>
+            </div>
+            <div class="doc-meta">
+              <div><strong>Estudante:</strong> {{ auth.currentUser()?.nome }}</div>
+              <div><strong>Matrícula:</strong> {{ auth.currentUser()?.matricula || '-' }} (Nº {{ turma.numeroChamada }})</div>
+              <div><strong>Turma:</strong> {{ turma.turmaNome }} ({{ turma.turno || 'MATUTINO' }})</div>
+            </div>
+          </div>
+
+          <div class="section-flex no-print">
             <div>
               <h3>{{ turma.turmaNome }}</h3>
               <p class="subtext" style="margin-bottom: 0;">
@@ -145,6 +163,9 @@ import { AuthService } from '../../core/services/auth.service';
                 <i class="fa-solid" [ngClass]="getStatusMatriculaIcon(turma.status)"></i>
                 Matrícula: {{ turma.status }}
               </span>
+              <button type="button" (click)="imprimirBoletim(boletimCard, turma)" class="btn btn-primary btn-sm" title="Exportar Boletim Escolar em PDF">
+                <i class="fa-solid fa-print"></i> Exportar Boletim PDF
+              </button>
             </div>
           </div>
 
@@ -153,11 +174,11 @@ import { AuthService } from '../../core/services/auth.service';
               <thead>
                 <tr>
                   <th>Disciplina</th>
-                  <th style="text-align: center;">Bimestre</th>
-                  <th style="text-align: center;">N1 (Peso 4)</th>
-                  <th style="text-align: center;">N2 (Peso 4)</th>
-                  <th style="text-align: center;">Trabalho (Peso 2)</th>
-                  <th style="text-align: center;">Recuperação</th>
+                  <th style="text-align: center; white-space: nowrap;">Bimestre</th>
+                  <th style="text-align: center; white-space: nowrap;">N1<br><small>(Peso 4)</small></th>
+                  <th style="text-align: center; white-space: nowrap;">N2<br><small>(Peso 4)</small></th>
+                  <th style="text-align: center; white-space: nowrap;">Trabalho<br><small>(Peso 2)</small></th>
+                  <th style="text-align: center; white-space: nowrap;">Recuperação</th>
                   <th style="text-align: center;">Média</th>
                   <th style="text-align: center;">Presença</th>
                   <th style="text-align: center;">Situação</th>
@@ -176,7 +197,7 @@ import { AuthService } from '../../core/services/auth.service';
                       {{ n.media ?? '-' }}
                     </strong>
                   </td>
-                  <td style="text-align: center;">
+                  <td style="text-align: center; white-space: nowrap;">
                     <span [ngClass]="n.reprovadoPorFalta ? 'text-danger font-bold' : ''">
                       {{ n.taxaPresenca ?? 100 }}% ({{ n.totalFaltas ?? 0 }} faltas)
                     </span>
@@ -206,6 +227,25 @@ import { AuthService } from '../../core/services/auth.service';
             <div class="legend-item">
               <span class="badge badge-danger">REPROVADO</span>
               <small>Média &lt; 4.0 ou Presença &lt; 75%</small>
+            </div>
+          </div>
+
+          <!-- Rodapé Institucional Exclusivo para Impressão do Boletim -->
+          <div class="print-only-block">
+            <div class="signatures-area">
+              <div class="sign-box">
+                <div class="sign-line"></div>
+                <span>Secretaria Escolar / Coordenação</span>
+                <small>Conferência e Validação Acadêmica</small>
+              </div>
+              <div class="sign-box">
+                <div class="sign-line"></div>
+                <span>{{ auth.currentUser()?.nome }}</span>
+                <small>Ciência do Estudante / Responsável</small>
+              </div>
+            </div>
+            <div class="doc-footer-note">
+              Documento emitido eletronicamente pelo Portal do Estudante <strong>Educa+</strong> • Dados auditados em banco secundário MongoDB.
             </div>
           </div>
         </div>
@@ -368,6 +408,7 @@ import { AuthService } from '../../core/services/auth.service';
             <div class="doc-brand">
               <img src="assets/logo-educa-mais.png" alt="Logo Educa+" class="doc-logo-img" />
               <div>
+                <span class="doc-inst-tag">DOCUMENTO OFICIAL DE ESCRITURAÇÃO ESCOLAR • LDB LEI Nº 9.394/96</span>
                 <h2>EDUCA+ — COLÉGIO INTEGRADO DE EDUCAÇÃO BÁSICA</h2>
                 <p>
                   {{ relatorioDetalhado.tipoRelatorio === 'FREQUENCIA_DISCIPLINA'
@@ -378,22 +419,34 @@ import { AuthService } from '../../core/services/auth.service';
               </div>
             </div>
             <div class="doc-meta">
-              <span><strong>Emissão:</strong> {{ relatorioDetalhado.dataEmissao | date:'dd/MM/yyyy HH:mm' }}</span>
-              <span><strong>Docente:</strong> {{ relatorioDetalhado.emitidoPor }}</span>
-              <span>
+              <div><strong>Emissão:</strong> {{ relatorioDetalhado.dataEmissao | date:'dd/MM/yyyy HH:mm' }}</div>
+              <div><strong>Docente:</strong> {{ relatorioDetalhado.emitidoPor }}</div>
+              <div>
                 <span class="badge" [ngClass]="relatorioDetalhado.statusValidacao === 'VALIDADO_COORDENADOR' ? 'badge-success' : 'badge-warning'">
                   {{ relatorioDetalhado.statusValidacao }}
                 </span>
-              </span>
+              </div>
             </div>
           </div>
 
           <!-- Sub-informações da Matrícula e Disciplina -->
           <div class="doc-subinfo">
-            <div><strong>Estudante:</strong> {{ relatorioDetalhado.alunoNome }}</div>
-            <div><strong>Matrícula / Nº:</strong> {{ relatorioDetalhado.alunoMatricula || '-' }} (Nº {{ relatorioDetalhado.numeroChamada }})</div>
-            <div><strong>Turma / Turno:</strong> {{ relatorioDetalhado.turmaNome }} ({{ relatorioDetalhado.turno }})</div>
-            <div><strong>Disciplina:</strong> {{ relatorioDetalhado.disciplinaNome }} ({{ relatorioDetalhado.cargaHoraria }}h)</div>
+            <div class="subinfo-cell">
+              <small>Estudante</small>
+              <strong>{{ relatorioDetalhado.alunoNome }}</strong>
+            </div>
+            <div class="subinfo-cell">
+              <small>Matrícula / Chamada</small>
+              <strong>{{ relatorioDetalhado.alunoMatricula || '-' }} (Nº {{ relatorioDetalhado.numeroChamada }})</strong>
+            </div>
+            <div class="subinfo-cell">
+              <small>Turma / Turno</small>
+              <strong>{{ relatorioDetalhado.turmaNome }} ({{ relatorioDetalhado.turno }})</strong>
+            </div>
+            <div class="subinfo-cell">
+              <small>Componente Curricular</small>
+              <strong>{{ relatorioDetalhado.disciplinaNome }} ({{ relatorioDetalhado.cargaHoraria }}h)</strong>
+            </div>
           </div>
 
           <!-- Indicadores Consolidados do Estudante no Relatório -->
@@ -429,12 +482,12 @@ import { AuthService } from '../../core/services/auth.service';
               <table class="custom-table">
                 <thead>
                   <tr>
-                    <th style="text-align: center;">Bimestre</th>
-                    <th style="text-align: center;">N1 (Peso 4)</th>
-                    <th style="text-align: center;">N2 (Peso 4)</th>
-                    <th style="text-align: center;">Trabalho (Peso 2)</th>
-                    <th style="text-align: center;">Recuperação</th>
-                    <th style="text-align: center;">Média Bimestral</th>
+                    <th style="text-align: center; white-space: nowrap;">Bimestre</th>
+                    <th style="text-align: center; white-space: nowrap;">N1<br><small>(Peso 4)</small></th>
+                    <th style="text-align: center; white-space: nowrap;">N2<br><small>(Peso 4)</small></th>
+                    <th style="text-align: center; white-space: nowrap;">Trabalho<br><small>(Peso 2)</small></th>
+                    <th style="text-align: center; white-space: nowrap;">Recuperação</th>
+                    <th style="text-align: center; white-space: nowrap;">Média<br><small>Bimestral</small></th>
                     <th style="text-align: center;">Situação</th>
                     <th>Observações Docentes</th>
                   </tr>
@@ -515,6 +568,10 @@ import { AuthService } from '../../core/services/auth.service';
                    : 'Aguardando Homologação da Coordenação' }}
               </small>
             </div>
+          </div>
+
+          <div class="doc-footer-note">
+            Documento oficial gerado pelo Sistema Integrado de Gestão Escolar <strong>Educa+</strong> • Autenticidade e histórico auditados via MongoDB.
           </div>
         </div>
       </div>
@@ -606,19 +663,44 @@ import { AuthService } from '../../core/services/auth.service';
     .relatorio-item-card.selected-report { border: 2px solid var(--secondary); box-shadow: var(--shadow-lg); background: var(--bg-surface); }
     .homologado-por { display: block; margin-top: 0.35rem; font-size: 0.78rem; color: var(--success); }
     .relatorio-card-actions { display: flex; gap: 0.65rem; padding-top: 0.75rem; border-top: 1px solid var(--border-subtle); }
+    .print-only-block { display: none; }
+    .doc-inst-tag { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; color: var(--secondary); text-transform: uppercase; margin-bottom: 0.15rem; }
     .print-document { padding: 2rem; background: var(--bg-surface); border: 1px solid var(--border-glass); border-radius: var(--radius-lg); margin-bottom: 2rem; }
     .doc-toolbar { padding-bottom: 1rem; border-bottom: 1px dashed var(--border-subtle); }
-    .doc-header { border-bottom: 2px solid var(--border-subtle); padding-bottom: 1.25rem; }
-    .doc-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; font-size: 0.85rem; color: var(--text-secondary); }
-    .doc-subinfo { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; background: var(--bg-surface-elevated); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-bottom: 1.5rem; font-size: 0.88rem; }
-    .doc-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-    .stat-box, .log-item { background: var(--bg-surface-elevated); padding: 0.9rem 1.1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
+    .doc-header { border-bottom: 2px solid var(--primary); padding-bottom: 1.25rem; flex-wrap: nowrap; }
+    .doc-brand h2 { font-size: 1.2rem; margin: 0; color: var(--primary); line-height: 1.25; }
+    .doc-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem; font-size: 0.8rem; color: var(--text-secondary); background: var(--bg-surface-elevated); padding: 0.65rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); white-space: nowrap; flex-shrink: 0; }
+    .doc-subinfo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; margin-bottom: 1.25rem; }
+    .subinfo-cell { background: var(--bg-surface-elevated); padding: 0.7rem 0.95rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
+    .subinfo-cell small { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); font-weight: 700; margin-bottom: 0.15rem; }
+    .subinfo-cell strong { font-size: 0.88rem; color: var(--text-primary); }
+    .doc-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.85rem; margin-bottom: 1.5rem; }
+    .stat-box, .log-item { background: var(--bg-surface-elevated); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
     .log-item { margin-bottom: 0.85rem; }
-    .doc-section h4 { font-size: 1rem; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem; color: var(--primary); }
-    .signatures-area { margin-top: 3rem; display: flex; justify-content: space-around; padding-top: 1.5rem; flex-wrap: wrap; gap: 2rem; }
+    .doc-section h4 { font-size: 0.95rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; color: var(--primary); text-transform: uppercase; letter-spacing: 0.03em; }
+    .signatures-area { margin-top: 2.5rem; display: flex; justify-content: space-around; padding-top: 1.25rem; flex-wrap: wrap; gap: 2rem; }
     .sign-box { text-align: center; width: 250px; }
-    .sign-line { height: 1px; background: var(--border-subtle); margin-bottom: 0.5rem; }
+    .sign-line { height: 1px; background: var(--border-subtle); border-top: 1px solid var(--border-subtle); margin-bottom: 0.5rem; }
     .sign-box span { display: block; font-weight: 600; font-size: 0.9rem; }
+    .doc-footer-note { margin-top: 1.5rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-subtle); text-align: center; font-size: 0.74rem; color: var(--text-muted); }
+    @media print {
+      .print-only-block { display: block !important; }
+      .doc-header, .doc-header.print-only-block { display: flex !important; flex-wrap: nowrap !important; justify-content: space-between !important; align-items: center !important; gap: 0.75rem !important; margin-bottom: 1rem !important; padding-bottom: 0.85rem !important; }
+      .doc-brand { min-width: 0 !important; flex: 1 !important; }
+      .doc-brand h2 { font-size: 0.98rem !important; color: #083b66 !important; }
+      .doc-brand p { font-size: 0.76rem !important; }
+      .doc-logo-img { width: 46px !important; height: 46px !important; }
+      .doc-meta { font-size: 0.72rem !important; padding: 0.45rem 0.65rem !important; background: #f8fafc !important; border-color: #cbd5e1 !important; color: #334155 !important; }
+      .print-document { padding: 0 !important; border: none !important; margin-bottom: 0 !important; background: #ffffff !important; }
+      .doc-subinfo, .doc-stats-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 0.5rem !important; margin-bottom: 0.9rem !important; }
+      .subinfo-cell, .stat-box { background: #f8fafc !important; border-color: #cbd5e1 !important; padding: 0.5rem 0.65rem !important; }
+      .custom-table th { padding: 5px 6px !important; font-size: 7pt !important; line-height: 1.2 !important; }
+      .custom-table td { padding: 5px 6px !important; font-size: 8pt !important; }
+      .badge { font-size: 6.8pt !important; padding: 0.15rem 0.45rem !important; }
+      .legend-footer { gap: 1rem !important; padding-top: 0.85rem !important; }
+      .signatures-area { margin-top: 1.75rem !important; padding-top: 0.75rem !important; }
+      .sign-line { height: 0 !important; border-top: 1.5px solid #334155 !important; background: transparent !important; }
+    }
     .log-details { font-size: 0.85rem; line-height: 1.6; margin-top: 0.4rem; }
     .audit-diff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.75rem; margin-top: 0.5rem; }
     .diff-box code { display: block; padding: 0.45rem 0.6rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--primary); border-radius: 4px; font-family: var(--font-mono); font-size: 0.75rem; word-break: break-all; }
@@ -649,7 +731,11 @@ export class AlunoViewComponent implements OnInit {
   relatorioDetalhado: any = null;
   carregandoRelatorio: boolean = false;
 
-  constructor(public auth: AuthService, private http: HttpClient) {}
+  constructor(
+    public auth: AuthService,
+    private http: HttpClient,
+    private pdfPrint: PdfPrintService
+  ) {}
 
   ngOnInit() {
     this.carregarDados();
@@ -755,8 +841,16 @@ export class AlunoViewComponent implements OnInit {
     this.relatorioDetalhado = null;
   }
 
+  imprimirBoletim(targetEl: HTMLElement, turma: any) {
+    const nomeAluno = this.auth.currentUser()?.nome || 'Estudante';
+    const nomeTurma = turma?.turmaNome || 'Boletim';
+    this.pdfPrint.printDocument(`Educa+ - Boletim Escolar - ${nomeAluno} - ${nomeTurma}`, targetEl);
+  }
+
   imprimirRelatorio() {
-    window.print();
+    const docEl = document.getElementById('visualizador-relatorio-aluno');
+    const disciplina = this.relatorioDetalhado?.disciplinaNome || 'Relatorio';
+    this.pdfPrint.printDocument(`Educa+ - Relatorio Individual - ${disciplina}`, docEl);
   }
 
   getStatusMatriculaBadgeClass(status: string): string {

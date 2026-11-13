@@ -462,18 +462,196 @@ html.font-xlarge, body.font-xlarge {
   }
 }
 
-/* Print styles for reports */
+/* ==========================================================================
+   PRINT / PDF EXPORT STYLES (GLOBAL — TODOS OS PERFIS)
+   ========================================================================== */
+/* Regra @page no nível raiz (sem !important) garante supressão do cabeçalho/rodapé do navegador (URL, título, data, paginação) */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
 @media print {
-  body {
+  html {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #ffffff !important;
-    color: #000000 !important;
+    font-size: 16px !important;
   }
-  .sidebar, .a11y-toolbar, .btn, .no-print, [vw] {
+
+  body,
+  body.dark-theme,
+  body.light-theme,
+  body.is-printing-pdf {
+    --bg-primary: #ffffff !important;
+    --bg-surface: #ffffff !important;
+    --bg-surface-elevated: #f8fafc !important;
+    --bg-surface-glass: #ffffff !important;
+    --bg-input: #f8fafc !important;
+    --border-subtle: #cbd5e1 !important;
+    --border-glass: #cbd5e1 !important;
+    --text-primary: #0f172a !important;
+    --text-secondary: #334155 !important;
+    --text-muted: #475569 !important;
+    --primary: #083b66 !important;
+    --secondary: #0f9d68 !important;
+    --success: #0d9462 !important;
+    --warning: #b45309 !important;
+    --danger: #dc2626 !important;
+    filter: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 12mm 14mm !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 9.5pt !important;
+    line-height: 1.4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body::before,
+  body::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Quando um card/documento específico é exportado, oculta os demais documentos da tela */
+  body.print-scoped-mode .print-document:not(.print-target-active) {
     display: none !important;
   }
-  .glass-panel, .glass-card {
-    border: 1px solid #ddd !important;
+
+  /* Ocultar absolutamente o widget VLibras (v7+ #vlibras-access-wrapper e legado [vw]), barras flutuantes, menus e botões */
+  #vlibras-access-wrapper,
+  #vlibras-access,
+  #vlibras-button,
+  #vlibras-popup,
+  [id^="vlibras"],
+  [class*="vlibras"],
+  html body div[vw],
+  html body div[vw].enabled,
+  html body [vw],
+  html body [vw] *,
+  html body [vp],
+  html body [vp] *,
+  html body [vw-access-button],
+  html body [vw-access-button].active,
+  html body [vw-plugin-wrapper],
+  html body .vw-access-button,
+  html body .vw-plugin-wrapper,
+  html body .vpw-box,
+  html body iframe[src*="vlibras"],
+  .sidebar,
+  .a11y-toolbar,
+  .top-floating-controls,
+  .btn,
+  .no-print {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    clip-path: inset(100%) !important;
+    -webkit-clip-path: inset(100%) !important;
+    transform: scale(0) !important;
+    content-visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    max-width: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    position: fixed !important;
+    left: -99999px !important;
+    top: -99999px !important;
+    pointer-events: none !important;
+  }
+
+  /* Desabilitar containers flex/scroll que quebram a paginação do Chromium no PDF */
+  .teacher-container,
+  .main-content,
+  .relatorios-wrapper,
+  .aluno-wrapper,
+  .coord-wrapper,
+  .tab-content {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+    background: transparent !important;
+  }
+
+  .glass-panel,
+  .glass-card,
+  .print-document {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     box-shadow: none !important;
-    background: #fff !important;
+    background: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    overflow: visible !important;
+  }
+
+  .doc-header {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 1rem !important;
+  }
+
+  .doc-brand h2 {
+    font-size: 1.05rem !important;
+    color: #083b66 !important;
+  }
+
+  .sign-line {
+    height: 0 !important;
+    background: transparent !important;
+    border-top: 1.5px solid #334155 !important;
+  }
+
+  .table-responsive {
+    overflow: visible !important;
+  }
+
+  .custom-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .custom-table thead {
+    display: table-header-group !important;
+  }
+
+  .custom-table th {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 6px 8px !important;
+    font-size: 7.5pt !important;
+  }
+
+  .custom-table td {
+    border: 1px solid #e2e8f0 !important;
+    padding: 6px 8px !important;
+    font-size: 8.5pt !important;
+    color: #0f172a !important;
+  }
+
+  .custom-table tbody tr:nth-child(even) td {
+    background-color: #f8fafc !important;
+  }
+
+  tr, .sign-box, .signatures-area, .doc-header, .doc-subinfo, .doc-stats-grid, .analytics-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }

@@ -53,6 +53,92 @@
         new window.VLibras.Widget('https://vlibras.gov.br/app');
       }
     });
+
+    (function() {
+      var hiddenElements = [];
+      var vlibrasHidden = false;
+
+      var vlibrasSelectors = [
+        '#vlibras-access-wrapper',
+        '#vlibras-access',
+        '#vlibras-button',
+        '#vlibras-popup',
+        '[id^="vlibras"]',
+        '[vw]',
+        '[vp]',
+        '[vw-access-button]',
+        '[vw-plugin-wrapper]',
+        '.vw-access-button',
+        '.vw-plugin-wrapper',
+        '.vpw-box',
+        'iframe[src*="vlibras"]'
+      ].join(', ');
+
+      function hideVLibrasForPrint() {
+        document.body.classList.add('is-printing-pdf');
+        if (vlibrasHidden) return;
+        vlibrasHidden = true;
+
+        var nodes = document.querySelectorAll(vlibrasSelectors);
+        nodes.forEach(function(el) {
+          if (!el) return;
+          hiddenElements.push({
+            el: el,
+            prevDisplay: el.style.getPropertyValue('display'),
+            prevDisplayPriority: el.style.getPropertyPriority('display'),
+            prevVisibility: el.style.getPropertyValue('visibility'),
+            prevVisibilityPriority: el.style.getPropertyPriority('visibility'),
+            prevOpacity: el.style.getPropertyValue('opacity'),
+            prevOpacityPriority: el.style.getPropertyPriority('opacity')
+          });
+          el.style.setProperty('display', 'none', 'important');
+          el.style.setProperty('visibility', 'hidden', 'important');
+          el.style.setProperty('opacity', '0', 'important');
+        });
+      }
+
+      function restoreVLibrasAfterPrint() {
+        document.body.classList.remove('is-printing-pdf');
+        while (hiddenElements.length > 0) {
+          var item = hiddenElements.pop();
+          var el = item.el;
+          if (!el) continue;
+          if (item.prevDisplay) {
+            el.style.setProperty('display', item.prevDisplay, item.prevDisplayPriority);
+          } else {
+            el.style.removeProperty('display');
+          }
+          if (item.prevVisibility) {
+            el.style.setProperty('visibility', item.prevVisibility, item.prevVisibilityPriority);
+          } else {
+            el.style.removeProperty('visibility');
+          }
+          if (item.prevOpacity) {
+            el.style.setProperty('opacity', item.prevOpacity, item.prevOpacityPriority);
+          } else {
+            el.style.removeProperty('opacity');
+          }
+        }
+        vlibrasHidden = false;
+      }
+
+      window.__educaHideVLibras = hideVLibrasForPrint;
+      window.__educaRestoreVLibras = restoreVLibrasAfterPrint;
+
+      window.addEventListener('beforeprint', hideVLibrasForPrint);
+      window.addEventListener('afterprint', restoreVLibrasAfterPrint);
+
+      var originalPrint = window.print.bind(window);
+      window.__educaRawPrint = originalPrint;
+      window.print = function() {
+        hideVLibrasForPrint();
+        requestAnimationFrame(function() {
+          setTimeout(function() {
+            originalPrint();
+          }, 60);
+        });
+      };
+    })();
   </script>
 </body>
 </html>
