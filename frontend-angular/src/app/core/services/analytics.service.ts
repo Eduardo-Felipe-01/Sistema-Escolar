@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
 
+import { ANALYTICS_BASE_URL } from '../config/api.config';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AnalyticsService {
-  private pythonUrl = 'http://localhost:8000';
+  private pythonUrl = ANALYTICS_BASE_URL;
 
   constructor(private http: HttpClient) {}
 

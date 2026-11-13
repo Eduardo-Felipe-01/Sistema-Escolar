@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
+import { API_BASE_URL } from '../../core/config/api.config';
 
 @Component({
   selector: 'app-coordenador-view',
@@ -922,35 +923,35 @@ export class CoordenadorViewComponent implements OnInit {
   }
 
   carregarDados() {
-    this.http.get<any>('http://localhost:8080/api/coordenador/estatisticas-gerais', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any>(`${API_BASE_URL}/api/coordenador/estatisticas-gerais`, { headers: this.getHeaders() }).subscribe({
       next: (res) => this.stats = res
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/coordenador/auditoria', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/coordenador/auditoria`, { headers: this.getHeaders() }).subscribe({
       next: (res) => this.auditoria = res
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/coordenador/relatorios', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/coordenador/relatorios`, { headers: this.getHeaders() }).subscribe({
       next: (res) => this.relatorios = res
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/coordenador/cronograma', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/coordenador/cronograma`, { headers: this.getHeaders() }).subscribe({
       next: (res) => this.cronograma = res
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/coordenador/usuarios', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/coordenador/usuarios`, { headers: this.getHeaders() }).subscribe({
       next: (res) => this.usuarios = res
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/coordenador/turmas', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/coordenador/turmas`, { headers: this.getHeaders() }).subscribe({
       next: (res) => this.turmas = res
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/coordenador/disciplinas', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/coordenador/disciplinas`, { headers: this.getHeaders() }).subscribe({
       next: (res) => this.disciplinas = res
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/coordenador/vinculos', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/coordenador/vinculos`, { headers: this.getHeaders() }).subscribe({
       next: (res) => this.vinculos = res
     });
   }
@@ -1001,7 +1002,7 @@ export class CoordenadorViewComponent implements OnInit {
   }
 
   validarRelatorio(relatorio: any) {
-    this.http.post<any>(`http://localhost:8080/api/coordenador/validar-relatorio/${relatorio.id}`, {}, { headers: this.getHeaders() }).subscribe({
+    this.http.post<any>(`${API_BASE_URL}/api/coordenador/validar-relatorio/${relatorio.id}`, {}, { headers: this.getHeaders() }).subscribe({
       next: (atualizado) => {
         relatorio.statusValidacao = atualizado.statusValidacao;
         relatorio.validadoPor = atualizado.validadoPor;
@@ -1018,7 +1019,7 @@ export class CoordenadorViewComponent implements OnInit {
       this.notificarErro('O título do evento é obrigatório.');
       return;
     }
-    this.http.post<any>('http://localhost:8080/api/coordenador/cronograma', this.novoEvento, { headers: this.getHeaders() }).subscribe({
+    this.http.post<any>(`${API_BASE_URL}/api/coordenador/cronograma`, this.novoEvento, { headers: this.getHeaders() }).subscribe({
       next: (c) => {
         this.cronograma.push(c);
         this.mostrarFormCronograma = false;
@@ -1037,7 +1038,7 @@ export class CoordenadorViewComponent implements OnInit {
   }
 
   removerEvento(evento: any) {
-    this.http.delete(`http://localhost:8080/api/coordenador/cronograma/${evento.id}`, { headers: this.getHeaders() }).subscribe({
+    this.http.delete(`${API_BASE_URL}/api/coordenador/cronograma/${evento.id}`, { headers: this.getHeaders() }).subscribe({
       next: () => {
         this.cronograma = this.cronograma.filter(c => c.id !== evento.id);
         this.notificar('Evento removido do cronograma.');
@@ -1051,7 +1052,7 @@ export class CoordenadorViewComponent implements OnInit {
       this.notificarErro('Nome e E-mail são obrigatórios.');
       return;
     }
-    this.http.post<any>('http://localhost:8080/api/coordenador/usuarios', this.novoUsuario, { headers: this.getHeaders() }).subscribe({
+    this.http.post<any>(`${API_BASE_URL}/api/coordenador/usuarios`, this.novoUsuario, { headers: this.getHeaders() }).subscribe({
       next: (u) => {
         this.usuarios.push(u);
         this.mostrarFormUsuario = false;
@@ -1066,7 +1067,7 @@ export class CoordenadorViewComponent implements OnInit {
   }
 
   alterarPerfilUsuario(usuario: any, novoRole: string) {
-    this.http.put<any>(`http://localhost:8080/api/coordenador/usuarios/${usuario.id}`, { role: novoRole }, { headers: this.getHeaders() }).subscribe({
+    this.http.put<any>(`${API_BASE_URL}/api/coordenador/usuarios/${usuario.id}`, { role: novoRole }, { headers: this.getHeaders() }).subscribe({
       next: (atualizado) => {
         usuario.role = atualizado.role;
         this.notificar(`Perfil de ${usuario.nome} atualizado para ${novoRole}!`);
@@ -1077,7 +1078,7 @@ export class CoordenadorViewComponent implements OnInit {
   }
 
   private executarExclusaoUsuario(usuario: any) {
-    this.http.delete(`http://localhost:8080/api/coordenador/usuarios/${usuario.id}`, { headers: this.getHeaders() }).subscribe({
+    this.http.delete(`${API_BASE_URL}/api/coordenador/usuarios/${usuario.id}`, { headers: this.getHeaders() }).subscribe({
       next: () => {
         this.usuarios = this.usuarios.filter(u => u.id !== usuario.id);
         this.notificar(`Usuário ${usuario.nome} removido com sucesso.`);
@@ -1095,7 +1096,7 @@ export class CoordenadorViewComponent implements OnInit {
       this.notificarErro('O nome da turma é obrigatório.');
       return;
     }
-    this.http.post<any>('http://localhost:8080/api/coordenador/turmas', this.novaTurma, { headers: this.getHeaders() }).subscribe({
+    this.http.post<any>(`${API_BASE_URL}/api/coordenador/turmas`, this.novaTurma, { headers: this.getHeaders() }).subscribe({
       next: (t) => {
         this.turmas.push(t);
         this.mostrarFormTurma = false;
@@ -1108,7 +1109,7 @@ export class CoordenadorViewComponent implements OnInit {
   }
 
   private executarExclusaoTurma(turma: any) {
-    this.http.delete(`http://localhost:8080/api/coordenador/turmas/${turma.id}`, { headers: this.getHeaders() }).subscribe({
+    this.http.delete(`${API_BASE_URL}/api/coordenador/turmas/${turma.id}`, { headers: this.getHeaders() }).subscribe({
       next: () => {
         this.turmas = this.turmas.filter(t => t.id !== turma.id);
         this.notificar(`Turma ${turma.nome} removida com sucesso.`);
@@ -1124,7 +1125,7 @@ export class CoordenadorViewComponent implements OnInit {
       this.notificarErro('Selecione a Turma e o Estudante para efetivar a matrícula.');
       return;
     }
-    let url = `http://localhost:8080/api/coordenador/turmas/${this.novaMatricula.turmaId}/matricular/${this.novaMatricula.alunoId}`;
+    let url = `${API_BASE_URL}/api/coordenador/turmas/${this.novaMatricula.turmaId}/matricular/${this.novaMatricula.alunoId}`;
     if (this.novaMatricula.numeroChamada) {
       url += `?numeroChamada=${this.novaMatricula.numeroChamada}`;
     }
@@ -1145,7 +1146,7 @@ export class CoordenadorViewComponent implements OnInit {
       this.notificarErro('O nome da disciplina é obrigatório.');
       return;
     }
-    this.http.post<any>('http://localhost:8080/api/coordenador/disciplinas', this.novaDisciplina, { headers: this.getHeaders() }).subscribe({
+    this.http.post<any>(`${API_BASE_URL}/api/coordenador/disciplinas`, this.novaDisciplina, { headers: this.getHeaders() }).subscribe({
       next: (d) => {
         this.disciplinas.push(d);
         this.mostrarFormDisciplina = false;
@@ -1158,7 +1159,7 @@ export class CoordenadorViewComponent implements OnInit {
   }
 
   private executarExclusaoDisciplina(disciplina: any) {
-    this.http.delete(`http://localhost:8080/api/coordenador/disciplinas/${disciplina.id}`, { headers: this.getHeaders() }).subscribe({
+    this.http.delete(`${API_BASE_URL}/api/coordenador/disciplinas/${disciplina.id}`, { headers: this.getHeaders() }).subscribe({
       next: () => {
         this.disciplinas = this.disciplinas.filter(d => d.id !== disciplina.id);
         this.notificar(`Disciplina ${disciplina.nome} removida com sucesso.`);
@@ -1175,7 +1176,7 @@ export class CoordenadorViewComponent implements OnInit {
       return;
     }
     const params = `turmaId=${this.novoVinculo.turmaId}&disciplinaId=${this.novoVinculo.disciplinaId}&professorId=${this.novoVinculo.professorId}`;
-    this.http.post<any>(`http://localhost:8080/api/coordenador/vinculos?${params}`, {}, { headers: this.getHeaders() }).subscribe({
+    this.http.post<any>(`${API_BASE_URL}/api/coordenador/vinculos?${params}`, {}, { headers: this.getHeaders() }).subscribe({
       next: (v) => {
         this.vinculos.push(v);
         this.mostrarFormVinculo = false;
@@ -1188,7 +1189,7 @@ export class CoordenadorViewComponent implements OnInit {
   }
 
   private executarExclusaoVinculo(vinculo: any) {
-    this.http.delete(`http://localhost:8080/api/coordenador/vinculos/${vinculo.id}`, { headers: this.getHeaders() }).subscribe({
+    this.http.delete(`${API_BASE_URL}/api/coordenador/vinculos/${vinculo.id}`, { headers: this.getHeaders() }).subscribe({
       next: () => {
         this.vinculos = this.vinculos.filter(v => v.id !== vinculo.id);
         this.notificar('Vínculo docente removido com sucesso.');

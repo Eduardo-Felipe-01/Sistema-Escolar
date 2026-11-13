@@ -4,11 +4,13 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
 
+import { API_BASE_URL } from '../config/api.config';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api/auth';
+  private apiUrl = `${API_BASE_URL}/api/auth`;
   currentUser = signal<User | null>(null);
 
   constructor(private http: HttpClient, private router: Router) {

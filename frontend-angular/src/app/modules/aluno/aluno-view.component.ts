@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
 import { PdfPrintService } from '../../core/services/pdf-print.service';
+import { API_BASE_URL } from '../../core/config/api.config';
 
 @Component({
   selector: 'app-aluno-view',
@@ -760,7 +761,7 @@ export class AlunoViewComponent implements OnInit {
   }
 
   carregarDados() {
-    this.http.get<any[]>('http://localhost:8080/api/aluno/meu-boletim', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/aluno/meu-boletim`, { headers: this.getHeaders() }).subscribe({
       next: (dados) => {
         this.boletins = dados;
         this.calcularIndicadoresGlobais(dados);
@@ -768,17 +769,17 @@ export class AlunoViewComponent implements OnInit {
       error: (err) => console.error('Erro ao carregar boletim:', err)
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/aluno/cronograma', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/aluno/cronograma`, { headers: this.getHeaders() }).subscribe({
       next: (dados) => this.cronograma = dados,
       error: (err) => console.error('Erro ao carregar cronograma:', err)
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/aluno/meu-historico', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/aluno/meu-historico`, { headers: this.getHeaders() }).subscribe({
       next: (dados) => this.historico = dados,
       error: (err) => console.error('Erro ao carregar histórico:', err)
     });
 
-    this.http.get<any[]>('http://localhost:8080/api/aluno/meus-relatorios', { headers: this.getHeaders() }).subscribe({
+    this.http.get<any[]>(`${API_BASE_URL}/api/aluno/meus-relatorios`, { headers: this.getHeaders() }).subscribe({
       next: (dados) => {
         this.relatorios = dados;
         if (dados.length > 0 && !this.relatorioSelecionadoId) {
@@ -816,7 +817,7 @@ export class AlunoViewComponent implements OnInit {
     this.relatorioSelecionadoId = relatorio.id;
     this.carregandoRelatorio = true;
 
-    this.http.get<any>(`http://localhost:8080/api/aluno/meus-relatorios/${relatorio.id}/detalhes`, { headers: this.getHeaders() }).subscribe({
+    this.http.get<any>(`${API_BASE_URL}/api/aluno/meus-relatorios/${relatorio.id}/detalhes`, { headers: this.getHeaders() }).subscribe({
       next: (detalhes) => {
         this.relatorioDetalhado = detalhes;
         this.carregandoRelatorio = false;

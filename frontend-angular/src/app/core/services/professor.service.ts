@@ -4,11 +4,13 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { TurmaResumo, NotaAluno, FrequenciaAluno } from '../models/user.model';
 
+import { API_BASE_URL } from '../config/api.config';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProfessorService {
-  private apiUrl = 'http://localhost:8080/api/professor';
+  private apiUrl = `${API_BASE_URL}/api/professor`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
