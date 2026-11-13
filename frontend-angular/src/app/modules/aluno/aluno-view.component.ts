@@ -141,8 +141,8 @@ import { AuthService } from '../../core/services/auth.service';
               </p>
             </div>
             <div class="header-badges">
-              <span class="badge" [ngClass]="turma.status === 'REPROVADO_FALTA' ? 'badge-danger' : 'badge-success'">
-                <i class="fa-solid" [ngClass]="turma.status === 'REPROVADO_FALTA' ? 'fa-triangle-exclamation' : 'fa-circle-check'"></i>
+              <span class="badge" [ngClass]="getStatusMatriculaBadgeClass(turma.status)">
+                <i class="fa-solid" [ngClass]="getStatusMatriculaIcon(turma.status)"></i>
                 Matrícula: {{ turma.status }}
               </span>
             </div>
@@ -757,6 +757,20 @@ export class AlunoViewComponent implements OnInit {
 
   imprimirRelatorio() {
     window.print();
+  }
+
+  getStatusMatriculaBadgeClass(status: string): string {
+    if (status === 'APROVADO') return 'badge-success';
+    if (status === 'RECUPERACAO') return 'badge-warning';
+    if (status === 'REPROVADO_NOTA' || status === 'REPROVADO_FALTA') return 'badge-danger';
+    return 'badge-info';
+  }
+
+  getStatusMatriculaIcon(status: string): string {
+    if (status === 'APROVADO') return 'fa-circle-check';
+    if (status === 'RECUPERACAO') return 'fa-circle-exclamation';
+    if (status === 'REPROVADO_NOTA' || status === 'REPROVADO_FALTA') return 'fa-triangle-exclamation';
+    return 'fa-book-open';
   }
 
   getBadgeTipoCronograma(tipo: string): string {

@@ -53,7 +53,7 @@ import { TurmaResumo, FrequenciaAluno } from '../../../core/models/user.model';
 
         <div class="filter-group">
           <label class="filter-label">Data da Aula:</label>
-          <input type="date" class="form-control" [(ngModel)]="dataSelecionada" (change)="carregarResumo()" />
+          <input type="date" class="form-control" [(ngModel)]="dataSelecionada" [max]="dataHoje" (change)="carregarResumo()" />
         </div>
 
         <div class="filter-group">
@@ -323,6 +323,7 @@ export class FrequenciaComponent implements OnInit {
   turmaSelecionadaId: number = 0;
   disciplinaId: number = 0;
   dataSelecionada: string = new Date().toISOString().substring(0, 10);
+  dataHoje: string = new Date().toISOString().substring(0, 10);
   aulasNoDia: number = 1;
   alunos: FrequenciaAluno[] = [];
   loading: boolean = true;
